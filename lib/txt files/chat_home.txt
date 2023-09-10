@@ -1,0 +1,521 @@
+//ver 3 scaffold only
+Scaffold(
+      //app bar
+      appBar: AppBar(
+        leading: Icon(CupertinoIcons.home),
+       title: const Text('Chat'),
+       actions: [
+        IconButton(onPressed: () {  }, 
+        icon: const Icon(Icons.search),),
+        IconButton(onPressed: () {  }, 
+        icon: const Icon(Icons.person),),
+       ],
+       ),
+
+       //floating button to add new user
+       floatingActionButton: Padding(
+         padding: const EdgeInsets.only(bottom: 10),
+         child: FloatingActionButton(
+          onPressed: () async {
+            await APIs.auth.signOut();
+            await GoogleSignIn().signOut();
+          }, 
+          child: Icon(Icons.add_comment_rounded),
+          ),
+       ),
+    
+  body: StreamBuilder(
+  stream: APIs.firestore.collection('users').snapshots(),
+  builder: (context, snapshot) {
+
+     switch (snapshot.connectionState) {
+
+      // if data is loading
+      case ConnectionState.waiting:
+      case ConnectionState.none:
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+
+    // if some or all data is loaded then show it
+      case ConnectionState.active:
+      case ConnectionState.done:
+
+    // if (snapshot.connectionState == ConnectionState.waiting) {
+
+    //   return CircularProgressIndicator(); // Loading indicator while data is loading.
+    // }
+
+    if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    }
+
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      return Text('No data available'); // Handle case where there is no data.
+    }
+          
+    // else show data      
+    final List<QueryDocumentSnapshot> data = snapshot.data!.docs;
+    return ListView.builder(
+      itemCount: data.length,
+      padding: EdgeInsets.only(top: mq.height * 0.02),
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        final document = data[index];
+
+        // Cast data() result to Map<String, dynamic> here
+        final Map<String, dynamic>? dataMap = document.data() as Map<String, dynamic>?;
+
+        if (dataMap != null) {
+
+            //list alternative
+            list = data.map((e) => ChatUser.fromJson(e.data() as String)).toList();
+
+            // Print the JSON-encoded data to the console
+            print('Data for document $index: ${jsonEncode(dataMap)}');
+          
+          final username = dataMap['username'] ?? '';
+          final selfIntro = dataMap['selfIntro'] ?? '';
+          // final title = dataMap['title'] ?? '';
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical:8.0),
+            
+            child: Container(
+              
+              margin: EdgeInsets.symmetric(horizontal: 35),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.only(left:15.0),
+                    child: Text('Username: $username'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left:15.0),
+                    child: Text('Self Intro: $selfIntro'),
+                  ),
+                  Divider(), // Add a divider between items if needed.
+                ],
+              ),
+            ),
+          );
+        }
+        // Handle case where dataMap is null (optional)
+        return Text('Data not available');
+      },
+    );
+    default:
+        return Text('Unknown ConnectionState: ${snapshot.connectionState}');
+    } //switch case
+  },
+),
+    );
+
+
+
+//ver 3 
+
+import 'dart:convert';
+import 'package:app/api/apis.dart';
+import 'package:app/main.dart';
+import 'package:app/models/chat_user.dart';
+// import 'package:app/widgets/chat_user_card.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+class ChatHome extends StatefulWidget {
+  const ChatHome({super.key});
+
+  @override
+  State<ChatHome> createState() => _ChatHomeState();
+}
+
+class _ChatHomeState extends State<ChatHome> {
+
+  List<ChatUser> list = [];
+
+ @override
+  void initState() {
+    super.initState();
+
+    // Allow screen rotation when entering ChatHome
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // Reset screen rotation preferences when leaving ChatHome
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      //app bar
+      appBar: AppBar(
+        leading: Icon(CupertinoIcons.home),
+       title: const Text('Chat'),
+       actions: [
+        IconButton(onPressed: () {  }, 
+        icon: const Icon(Icons.search),),
+        IconButton(onPressed: () {  }, 
+        icon: const Icon(Icons.person),),
+       ],
+       ),
+
+       //floating button to add new user
+       floatingActionButton: Padding(
+         padding: const EdgeInsets.only(bottom: 10),
+         child: FloatingActionButton(
+          onPressed: () async {
+            await APIs.auth.signOut();
+            await GoogleSignIn().signOut();
+          }, 
+          child: Icon(Icons.add_comment_rounded),
+          ),
+       ),
+    
+  body: StreamBuilder(
+  stream: APIs.firestore.collection('users').snapshots(),
+  builder: (context, snapshot) {
+
+     switch (snapshot.connectionState) {
+
+      // if data is loading
+      case ConnectionState.waiting:
+      case ConnectionState.none:
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+
+    // if some or all data is loaded then show it
+      case ConnectionState.active:
+      case ConnectionState.done:
+
+    // if (snapshot.connectionState == ConnectionState.waiting) {
+
+    //   return CircularProgressIndicator(); // Loading indicator while data is loading.
+    // }
+
+    if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    }
+
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      return Text('No data available'); // Handle case where there is no data.
+    }
+          
+    // else show data      
+    final List<QueryDocumentSnapshot> data = snapshot.data!.docs;
+    return ListView.builder(
+      itemCount: data.length,
+      padding: EdgeInsets.only(top: mq.height * 0.02),
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        final document = data[index];
+
+        // Cast data() result to Map<String, dynamic> here
+        final Map<String, dynamic>? dataMap = document.data() as Map<String, dynamic>?;
+
+        if (dataMap != null) {
+
+            //list alternative
+            list = data.map((e) => ChatUser.fromJson(e.data() as String)).toList();
+
+            // Print the JSON-encoded data to the console
+            print('Data for document $index: ${jsonEncode(dataMap)}');
+          
+          final username = dataMap['username'] ?? '';
+          final selfIntro = dataMap['selfIntro'] ?? '';
+          // final title = dataMap['title'] ?? '';
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical:8.0),
+            
+            child: Container(
+              
+              margin: EdgeInsets.symmetric(horizontal: 35),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.only(left:15.0),
+                    child: Text('Username: $username'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left:15.0),
+                    child: Text('Self Intro: $selfIntro'),
+                  ),
+                  Divider(), // Add a divider between items if needed.
+                ],
+              ),
+            ),
+          );
+        }
+        // Handle case where dataMap is null (optional)
+        return Text('Data not available');
+      },
+    );
+    default:
+        return Text('Unknown ConnectionState: ${snapshot.connectionState}');
+    } //switch case
+  },
+),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ver 1
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      //app bar
+      appBar: AppBar(
+        leading: Icon(CupertinoIcons.home),
+       title: const Text('Chat'),
+       actions: [
+        IconButton(onPressed: () {  }, 
+        icon: const Icon(Icons.search),),
+        IconButton(onPressed: () {  }, 
+        icon: const Icon(Icons.person),),
+       ],
+       ),
+
+       //floating button to add new user
+       floatingActionButton: Padding(
+         padding: const EdgeInsets.only(bottom: 10),
+         child: FloatingActionButton(
+          onPressed: () async {
+            await APIs.auth.signOut();
+            await GoogleSignIn().signOut();
+          }, 
+          child: Icon(Icons.add_comment_rounded),
+          ),
+       ),
+    
+  body: StreamBuilder(
+  stream: APIs.firestore.collection('users').snapshots(),
+  builder: (context, snapshot) {
+
+    if (snapshot.connectionState == ConnectionState.waiting) {
+
+      return CircularProgressIndicator(); // Loading indicator while data is loading.
+    }
+
+    if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    }
+
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      return Text('No data available'); // Handle case where there is no data.
+    }
+          
+    // else show data      
+    final List<QueryDocumentSnapshot> data = snapshot.data!.docs;
+    return ListView.builder(
+      itemCount: data.length,
+      padding: EdgeInsets.only(top: mq.height * 0.02),
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        final document = data[index];
+
+        // Cast data() result to Map<String, dynamic> here
+        final Map<String, dynamic>? dataMap = document.data() as Map<String, dynamic>?;
+
+        if (dataMap != null) {
+
+          // print('Data: ${jsonEncode(data[index])}'as num);
+            // Print the JSON-encoded data to the console
+            print('Data for document $index: ${jsonEncode(dataMap)}');
+          
+          final username = dataMap['username'] ?? '';
+          final selfIntro = dataMap['selfIntro'] ?? '';
+          // final title = dataMap['title'] ?? '';
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical:8.0),
+            
+            child: Container(
+              
+              margin: EdgeInsets.symmetric(horizontal: 35),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.only(left:15.0),
+                    child: Text('Username: $username'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left:15.0),
+                    child: Text('Self Intro: $selfIntro'),
+                  ),
+                  Divider(), // Add a divider between items if needed.
+                ],
+              ),
+            ),
+          );
+        }
+        // Handle case where dataMap is null (optional)
+        return Text('Data not available');
+      },
+    );
+  },
+),
+    );
+  }
+
+
+
+
+
+
+
+
+// ver 2
+StreamBuilder(
+  stream: APIs.firestore.collection('fruits').snapshots(),
+  builder: (context, snapshot) {
+    switch (snapshot.connectionState) {
+      // if data is loading
+      case ConnectionState.waiting:
+      case ConnectionState.none:
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+
+      // if some or all data is loaded then show it
+      case ConnectionState.active:
+      case ConnectionState.done:
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Text('No data available'); // Handle the case where there is no data.
+        }
+
+        final List<QueryDocumentSnapshot> data = snapshot.data!.docs;
+        return ListView.builder(
+          itemCount: data.length,
+          padding: EdgeInsets.only(top: mq.height * 0.02),
+          physics: const BouncingScrollPhysics(),
+          itemBuilder: (context, index) {
+            final document = data[index];
+
+            // Cast data() result to Map<String, dynamic> here
+            final Map<String, dynamic>? dataMap = document.data() as Map<String, dynamic>?;
+
+            if (dataMap != null) {
+              // Print the JSON-encoded data to the console
+              print('Data for document $index: ${jsonEncode(dataMap)}');
+
+              final username = dataMap['username'] ?? '';
+              final selfIntro = dataMap['selfIntro'] ?? '';
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 35),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10,),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0),
+                        child: Text('Username: $username'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0),
+                        child: Text('Self Intro: $selfIntro'),
+                      ),
+                      Divider(), // Add a divider between items if needed.
+                    ],
+                  ),
+                ),
+              );
+            }
+            // Handle case where dataMap is null (optional)
+            return Text('Data not available');
+          },
+        );
+
+      default:
+        return Text('Unknown ConnectionState: ${snapshot.connectionState}');
+    }
+  },
+)

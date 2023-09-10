@@ -1,0 +1,74 @@
+   return  ListView.builder(
+                      itemCount: list.length,
+                      padding: EdgeInsets.only(top: mq.height * .02),
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                       // return const ChatUserCard();
+                       return Text('Name: ${list[index]}');
+                      });
+
+
+
+return  ListView.builder(
+        itemCount: list.length,
+        padding: EdgeInsets.only(top: mq.height * .02),
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (context, index) {
+        return Text('Username: $username'),
+               Text('Self Intro: $selfIntro'),
+                      });
+
+
+
+ 
+ Ver2
+ 
+ body: StreamBuilder(
+  stream: APIs.firestore.collection('users').snapshots(),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return CircularProgressIndicator(); // Loading indicator while data is loading.
+    }
+
+    if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    }
+
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      return Text('No data available'); // Handle case where there is no data.
+    }
+
+    final List<QueryDocumentSnapshot> data = snapshot.data!.docs;
+    return ListView.builder(
+      itemCount: data.length,
+      padding: EdgeInsets.only(top: mq.height * 0.02),
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        final document = data[index];
+
+        // Cast data() result to Map<String, dynamic> here
+        final Map<String, dynamic>? dataMap = document.data() as Map<String, dynamic>?;
+
+        if (dataMap != null) {
+          final username = dataMap['username'] ?? '';
+          final selfIntro = dataMap['selfIntro'] ?? '';
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Username: $username'),
+              Text('Self Intro: $selfIntro'),
+              Divider(), // Add a divider between items if needed.
+            ],
+          );
+        }
+        // Handle case where dataMap is null (optional)
+        return Text('Data not available');
+      },
+    );
+  },
+),
+
+
+Ver1
+

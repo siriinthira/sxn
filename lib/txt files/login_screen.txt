@@ -1,0 +1,275 @@
+import 'dart:async';
+import 'package:app/main.dart';
+import 'package:app/screens/chat_home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+//try
+final GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly', // Add other scopes if needed
+  ],
+);
+
+
+Future<void> _handleSignIn() async {
+  try {
+
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+
+    if (googleSignInAccount != null) {
+      // You can access user information like this:
+      print('Display Name: ${googleSignInAccount.displayName}');
+      print('Email: ${googleSignInAccount.email}');
+      print('ID: ${googleSignInAccount.id}');
+      print('Profile Picture: ${googleSignInAccount.photoUrl}');
+
+      // You can also obtain an authentication token (obtain the auth details from request)
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+      // Now, you can use the credential to sign in with Firebase or your authentication system
+      // Example: FirebaseAuth.instance.signInWithCredential(credential);
+    } else {
+      // Handle if the user cancels the sign-in process
+      print('Sign-In canceled');
+    }
+  } catch (error) {
+    // Handle errors
+    print('Error: $error');
+  }
+}
+
+
+
+
+class _LoginScreenState extends State<LoginScreen> {
+
+  bool _isAnimate = false;
+
+  @override
+  void initState(){
+    super.initState();
+    Future.delayed(Duration(milliseconds: 500), () {
+      setState(() {
+        _isAnimate = true;
+      });
+    },);
+  }
+
+
+  _handleGoogleBtnClick(){
+    _handleSignIn().then((user) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHome()));
+    });
+  }
+
+//   Future<UserCredential> _signInWithGoogle() async {
+//   // Trigger the authentication flow
+//   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+//   // Obtain the auth details from the request
+//   final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+//   // Create a new credential
+//   final credential = GoogleAuthProvider.credential(
+//     accessToken: googleAuth?.accessToken,
+//     idToken: googleAuth?.idToken,
+//   );
+
+//   // Once signed in, return the UserCredential
+//   return await FirebaseAuth.instance.signInWithCredential(credential);
+// }
+
+//sign out function
+// _signOut() async {
+//   await FirebaseAuth.instance.signOut();
+//   await GoogleSignIn().signOut();
+// }
+
+  @override
+  Widget build(BuildContext context) {
+    // initializing media query for getting device screen size
+    //pause comment mq while splash screen is using
+    // mq = MediaQuery.of(context).size;
+
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+       title: const Text('Welcome to Chat'),
+       ),
+       body: Stack(
+        children: [
+
+        // app logo
+        AnimatedPositioned(
+          top: mq.height * .15,
+          right: _isAnimate ? mq.width * .25 : -mq.width * .5, // left: mq.width * .25,
+          width: mq.width * .5,
+          duration: const Duration(seconds: 1),
+          child: Image.asset('images/chat1.png'),
+          ),
+          
+        // google login button  
+        Positioned(
+          top: mq.height * .7,
+          left:  (mq.width - (mq.width * 0.8)) / 2, // Center the button horizontally
+          width: mq.width * .8,
+          height: mq.height * .06,
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.greenAccent.shade400,
+              shape: StadiumBorder(),
+              elevation: 1),
+
+            onPressed: () {
+              // Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatHome(),),);
+              _handleGoogleBtnClick();
+              // _handleSignIn();
+            }, 
+            icon: Container(
+            width: 49, // Adjust the width to your desired size
+            height: mq.height * .03, // Adjust the height to your desired size
+            child: Image.asset('images/google_icon.png'),
+    ), 
+            label: RichText(
+              text: const TextSpan(
+                style:  TextStyle(color:  Colors.black, fontSize: 19),
+                children: [
+                  TextSpan(text: 'Sign In with'),
+                  TextSpan(text: ' Google', style: TextStyle(fontWeight: FontWeight.w500)),
+                ]
+              ),
+            ),)
+           ,),
+       ],),
+    );
+  }
+}
+
+/*  Image.asset(
+    'assets/images/file-name.jpg',
+    height: 100,
+    width: 100,
+    ) 
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// class LoginScreen extends StatefulWidget {
+//   const LoginScreen({super.key});
+
+//   @override
+//   State<LoginScreen> createState() => _LoginScreenState();
+// }
+
+// //try
+// final GoogleSignIn _googleSignIn = GoogleSignIn(
+//   scopes: [
+//     'email',
+//     'https://www.googleapis.com/auth/contacts.readonly', // Add other scopes if needed
+//   ],
+// );
+
+
+// Future<void> _handleSignIn() async {
+//   try {
+
+//     // Trigger the authentication flow
+//     final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+
+//     if (googleSignInAccount != null) {
+//       // You can access user information like this:
+//       print('Display Name: ${googleSignInAccount.displayName}');
+//       print('Email: ${googleSignInAccount.email}');
+//       print('ID: ${googleSignInAccount.id}');
+//       print('Profile Picture: ${googleSignInAccount.photoUrl}');
+
+//       // You can also obtain an authentication token (obtain the auth details from request)
+//       final GoogleSignInAuthentication googleSignInAuthentication =
+//           await googleSignInAccount.authentication;
+//       final AuthCredential credential = GoogleAuthProvider.credential(
+//         accessToken: googleSignInAuthentication.accessToken,
+//         idToken: googleSignInAuthentication.idToken,
+//       );
+//       // Now, you can use the credential to sign in with Firebase or your authentication system
+//       // Example: FirebaseAuth.instance.signInWithCredential(credential);
+//     } else {
+//       // Handle if the user cancels the sign-in process
+//       print('Sign-In canceled');
+//     }
+//   } catch (error) {
+//     // Handle errors
+//     print('Error: $error');
+//   }
+// }
+
+// class _LoginScreenState extends State<LoginScreen> {
+
+//   bool _isAnimate = false;
+
+//   @override
+//   void initState(){
+//     super.initState();
+//     Future.delayed(Duration(milliseconds: 500), () {
+//       setState(() {
+//         _isAnimate = true;
+//       });
+//     },);
+//   }
+
+
+//   _handleGoogleBtnClick(){
+//     _handleSignIn().then((user) {
+//       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHome()));
+//     });
+//   }
+
+//sign out function
+// _signOut() async {
+//   await FirebaseAuth.instance.signOut();
+//   await GoogleSignIn().signOut();
+// }
