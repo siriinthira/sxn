@@ -24,9 +24,9 @@ class APIs {
   // for storing self information
   static ChatUser me = ChatUser(
       id: user.uid,
-      username: user.displayName.toString(),
+      name: user.displayName.toString(),
       email: user.email.toString(),
-      selfIntro: "Hey, I'm a photographer!",
+      about: "Hey, I'm using We Chat!",
       image: user.photoURL.toString(),
       createdAt: '',
       isOnline: false,
@@ -68,7 +68,7 @@ class APIs {
       final body = {
         "to": chatUser.pushToken,
         "notification": {
-          "title": me.username, //our name should be send
+          "title": me.name, //our name should be send
           "body": msg,
           "android_channel_id": "chats"
         },
@@ -147,9 +147,9 @@ class APIs {
 
     final chatUser = ChatUser(
         id: user.uid,
-        username: user.displayName.toString(),
+        name: user.displayName.toString(),
         email: user.email.toString(),
-        selfIntro: "Hey, I'm using We Chat!",
+        about: "Hey, I'm using We Chat!",
         image: user.photoURL.toString(),
         createdAt: time,
         isOnline: false,
@@ -200,8 +200,8 @@ class APIs {
   // for updating user information
   static Future<void> updateUserInfo() async {
     await firestore.collection('users').doc(user.uid).update({
-      'name': me.username,
-      'about': me.selfIntro,
+      'name': me.name,
+      'about': me.about,
     });
   }
 

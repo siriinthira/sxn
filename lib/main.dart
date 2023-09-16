@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 late Size mq;
 
 void main() {
+  
   WidgetsFlutterBinding.ensureInitialized();
 
   //enter full screen
@@ -17,6 +18,7 @@ void main() {
   
   //for setting orientation to portrait only
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown ]).then((value) { 
+   
     _initializeFirebase();
   runApp(const MyApp());});
   
