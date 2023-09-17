@@ -15,7 +15,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
-  // bool _isAnimate = false;
 
   @override
   void initState(){
@@ -29,7 +28,6 @@ class _SplashScreenState extends State<SplashScreen> {
       print('\nUser: ${FirebaseAuth.instance.currentUser}');
     }
      //Navigate to other page
-    //  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatHome() ));
     Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (_) => const LoginScreen() ));
     },);

@@ -1,10 +1,7 @@
-// TODO Implement this library.
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../api/apis.dart';
 import '../helper/dialogs.dart';
 import '../main.dart';
@@ -21,11 +18,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  
   // for storing all users
   List<ChatUser> _list = [];
 
   // for storing searched items
   final List<ChatUser> _searchList = [];
+
   // for storing search status
   bool _isSearching = false;
 
@@ -60,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
         //if search is on & back button is pressed then close search
-        //or else simple close current screen on back button click
+        //or else simply close current screen on back button click
         onWillPop: () {
           if (_isSearching) {
             setState(() {
@@ -71,7 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
             return Future.value(true);
           }
         },
-        child: Scaffold(
+        child: 
+        
+        Scaffold(
           //app bar
           appBar: AppBar(
             leading: const Icon(CupertinoIcons.home),
@@ -81,11 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         border: InputBorder.none, hintText: 'Name, Email, ...'),
                     autofocus: true,
                     style: const TextStyle(fontSize: 17, letterSpacing: 0.5),
-                    //when search text changes then updated search list
+                    
                     onChanged: (val) {
                       //search logic
                       _searchList.clear();
-
+                      //when search text changes then updated search list
                       for (var i in _list) {
                         if (i.username.toLowerCase().contains(val.toLowerCase()) ||
                             i.email.toLowerCase().contains(val.toLowerCase())) {
@@ -97,7 +98,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     },
                   )
-                : const Text('We Chat'),
+                : const Text('Skills X Network'),
+
+
             actions: [
               //search user button
               IconButton(
@@ -122,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
 
+
           //floating button to add new user
           floatingActionButton: Padding(
             padding: const EdgeInsets.only(bottom: 10),
@@ -131,6 +135,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: const Icon(Icons.add_comment_rounded)),
           ),
+
+
+
 
           //body
           body: StreamBuilder(
@@ -157,8 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         //if data is loading
                         case ConnectionState.waiting:
                         case ConnectionState.none:
-                        // return const Center(
-                        //     child: CircularProgressIndicator());
+                        // return const Center(child: CircularProgressIndicator());
 
                         //if some or all data is loaded then show it
                         case ConnectionState.active:
@@ -166,8 +172,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           final data = snapshot.data?.docs;
                           _list = data
                                   ?.map((e) => ChatUser.fromJson(e.data()))
-                                  .toList() ??
-                              [];
+                                  .toList() ?? [];
+
+
 
                           if (_list.isNotEmpty) {
                             return ListView.builder(

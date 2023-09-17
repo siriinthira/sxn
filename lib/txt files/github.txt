@@ -13,6 +13,8 @@ git push -u origin main
 …or push an existing repository from the command line
 
 
-git remote add origin https://github.com/siriinthira/sxn.git
+
 git branch -M main
+
+git commit -m "first commit"
 git push -u origin main

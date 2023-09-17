@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart';
-
 import '../models/chat_user.dart';
 import '../models/message.dart';
 
@@ -35,6 +34,10 @@ class APIs {
 
   // to return current user
   static User get user => auth.currentUser!;
+
+
+
+
 
   // for accessing firebase messaging (Push Notification)
   static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
@@ -149,7 +152,7 @@ class APIs {
         id: user.uid,
         username: user.displayName.toString(),
         email: user.email.toString(),
-        selfIntro: "Hey, I'm using We Chat!",
+        selfIntro: "Let's write something about yourself!",
         image: user.photoURL.toString(),
         createdAt: time,
         isOnline: false,
@@ -161,6 +164,8 @@ class APIs {
         .doc(user.uid)
         .set(chatUser.toJson());
   }
+
+
 
   // for getting id's of known users from firestore database
   static Stream<QuerySnapshot<Map<String, dynamic>>> getMyUsersId() {
@@ -185,6 +190,15 @@ class APIs {
         // .where('id', isNotEqualTo: user.uid)
         .snapshots();
   }
+
+
+
+
+
+
+
+
+
 
   // for adding an user to my user when first message is send
   static Future<void> sendFirstMessage(

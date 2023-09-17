@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:app/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -46,11 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
         if ((await APIs.userExists())) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const ChatHome()));
+              context, MaterialPageRoute(builder: (_) => const HomeScreen()));
         } else {
           await APIs.createUser().then((value) {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (_) => const ChatHome()));
+                context, MaterialPageRoute(builder: (_) => const HomeScreen()));
           });
         }
       }
