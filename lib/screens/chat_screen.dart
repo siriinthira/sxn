@@ -69,6 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     stream: APIs.getAllMessages(widget.user),
                     builder: (context, snapshot) {
                       switch (snapshot.connectionState) {
+                        
                         //if data is loading
                         case ConnectionState.waiting:
                         case ConnectionState.none:

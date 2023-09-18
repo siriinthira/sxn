@@ -18,8 +18,10 @@ import 'auth/login_screen.dart';
 
 //profile screen -- to show signed in user info
 class ProfileScreen extends StatefulWidget {
-  final ChatUser user;
 
+  final ChatUser user; 
+
+  
   const ProfileScreen({super.key, required this.user});
 
   @override
@@ -39,39 +41,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
           //app bar
           appBar: AppBar(title: const Text('Profile Screen')),
 
-          //floating button to log out
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: FloatingActionButton.extended(
-                backgroundColor: Colors.redAccent,
-                onPressed: () async {
-                  //for showing progress dialog
-                  Dialogs.showProgressBar(context);
+          // floating button to log out
+          // floatingActionButton: Padding(
+          //   padding: const EdgeInsets.only(bottom: 10),
+          //   child: FloatingActionButton.extended(
+          //       backgroundColor: Colors.redAccent,
+          //       onPressed: () async {
+          //         //for showing progress dialog
+          //         Dialogs.showProgressBar(context);
 
-                  await APIs.updateActiveStatus(false);
+          //         await APIs.updateActiveStatus(false);
 
-                  //sign out from app
-                  await APIs.auth.signOut().then((value) async {
-                    await GoogleSignIn().signOut().then((value) {
-                      //for hiding progress dialog
-                      Navigator.pop(context);
+          //         //sign out from app
+          //         await APIs.auth.signOut().then((value) async {
+          //           await GoogleSignIn().signOut().then((value) {
+          //             //for hiding progress dialog
+          //             Navigator.pop(context);
 
-                      //for moving to home screen
-                      Navigator.pop(context);
+          //             //for moving to home screen
+          //             Navigator.pop(context);
 
-                      APIs.auth = FirebaseAuth.instance;
+          //             APIs.auth = FirebaseAuth.instance;
 
-                      //replacing home screen with login screen
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const LoginScreen()));
-                    });
-                  });
-                },
-                icon: const Icon(Icons.logout),
-                label: const Text('Logout')),
-          ),
+          //             //replacing home screen with login screen
+          //             Navigator.pushReplacement(
+          //                 context,
+          //                 MaterialPageRoute(
+          //                     builder: (_) => const LoginScreen()));
+          //           });
+          //         });
+          //       },
+          //       icon: const Icon(Icons.logout),
+          //       label: const Text('Logout')),
+          // ),
 
           //body
           body: Form(
@@ -136,15 +138,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // for adding some space
                     SizedBox(height: mq.height * .03),
 
-                    // user email label
-                    Text(widget.user.email,
+                    // user username label
+                    Text(widget.user.username,
                         style: const TextStyle(
                             color: Colors.black54, fontSize: 16)),
 
                     // for adding some space
-                    SizedBox(height: mq.height * .05),
+                    SizedBox(height: mq.height * .03),
 
-                    // name input field
+                    //name input field
                     TextFormField(
                       initialValue: widget.user.username,
                       onSaved: (val) => APIs.me.username = val ?? '',
@@ -157,10 +159,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12)),
                           hintText: 'eg. Happy Day',
-                          label: const Text('Name')),
+                          label: const Text('Username')),
                     ),
 
-                    // for adding some space
+                    // // for adding some space
                     SizedBox(height: mq.height * .02),
 
                     // about input field
@@ -175,12 +177,179 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               color: Colors.blue),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12)),
-                          hintText: 'eg. Feeling Happy',
-                          label: const Text('About')),
+                          hintText: 'eg. write something about yourself',
+                          label: const Text('About Me')),
                     ),
 
-                    // for adding some space
+                     SizedBox(height: mq.height * .02),
+
+                    // TextFormField(
+                    //   initialValue: widget.user.occupation.join(', '),
+                    //   decoration: InputDecoration(
+                    //       prefixIcon: const Icon(Icons.info_outline,
+                    //           color: Colors.blue),
+                    //       border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(12)),
+                    //       hintText: 'eg. I work as a...',
+                    //       label: const Text('Occupation')),
+                    // ),
+
+                    // SizedBox(height: mq.height * .02),
+
+                    Card(
+                      elevation: 4, // Adds a shadow to the card
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Text(
+                            //   'Self Intro',
+                            //   style: TextStyle(
+                            //     color: Colors.blue,
+                            //     fontSize: 18,
+                            //     fontWeight: FontWeight.bold,
+                            //   ),
+                            // ),
+                            // SizedBox(height: 8), 
+                            // Text(
+                            //   widget.user.selfIntro,
+                            //   style: TextStyle(
+                            //     fontSize: 16,
+                            //   ),
+                            // ),
+                            // SizedBox(height: 50),
+                            Text(
+                              'Occupation',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 8), 
+                            Text(
+                              widget.user.occupation.join(',\n '),
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                            Text(
+                              'Education History',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 8), // Add some spacing
+                            Text(
+                              widget.user.eduHistory.join(',\n '),
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                            Text(
+                              'Skills ',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              widget.user.skills.join(',\n '),
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                            Text(
+                              'Experience ',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              widget.user.experience.join(',\n '),
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
                     SizedBox(height: mq.height * .05),
+
+                    // Card(
+                    //     elevation: 4, // Adds a shadow to the card
+                    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.all(16),
+                    //       child:
+                    //       Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Text(
+                    //             'skills',
+                    //             style: TextStyle(
+                    //               color: Colors.blue,
+                    //               fontSize: 18,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //           SizedBox(height: 8), // Add some spacing
+                    //           Text(
+                    //             widget.user.skills.join(',\n '),
+                    //             style: TextStyle(
+                    //               fontSize: 16,
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+
+                    //   SizedBox(height: mq.height * .02),
+
+                    // Card(
+                    //     elevation: 4, // Adds a shadow to the card
+                    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.all(16),
+                    //       child: Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Text(
+                    //             'Experience',
+                    //             style: TextStyle(
+                    //               color: Colors.blue,
+                    //               fontSize: 18,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //           SizedBox(height: 8), // Add some spacing
+                    //           Text(
+                    //             widget.user.experience.join(',\n '), // Display the experience as a comma-separated string
+                    //             style: TextStyle(
+                    //               fontSize: 16,
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+
+                    // for adding some space
+                    SizedBox(height: mq.height * .02),
 
                     // update profile button
                     ElevatedButton.icon(
@@ -199,7 +368,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: const Icon(Icons.edit, size: 28),
                       label:
                           const Text('UPDATE', style: TextStyle(fontSize: 16)),
-                    )
+                    ),
+                    SizedBox(height: mq.height * .05),
                   ],
                 ),
               ),

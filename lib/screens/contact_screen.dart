@@ -36,6 +36,8 @@ class _ContactScreenState extends State<ContactScreen> {
     //for updating user active status according to lifecycle events
     //resume -- active or online
     //pause  -- inactive or offline
+
+
     SystemChannels.lifecycle.setMessageHandler((message) {
       log('Message: $message');
 
@@ -142,7 +144,6 @@ class _ContactScreenState extends State<ContactScreen> {
           //body
           body: StreamBuilder(
             
-         
             stream: APIs.getMyUsersId(),
 
             //get id of only known users

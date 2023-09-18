@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:app/screens/chat_home.dart';
+// import 'package:app/screens/chat_home.dart';
 import 'package:app/screens/contact_screen.dart';
 import 'package:app/screens/log_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         if ((await APIs.userExists())) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const LogScreen()));
+              context, MaterialPageRoute(builder: (_) => const ContactScreen()));
         } else {
           await APIs.createUser().then((value) {
             Navigator.pushReplacement(

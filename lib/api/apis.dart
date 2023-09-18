@@ -11,6 +11,7 @@ import '../models/chat_user.dart';
 import '../models/message.dart';
 
 class APIs {
+  
   // for authentication
   static FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -25,12 +26,21 @@ class APIs {
       id: user.uid,
       username: user.displayName.toString(),
       email: user.email.toString(),
-      selfIntro: "Hey, I'm a photographer!",
+      selfIntro: "write something about yourself!",
       image: user.photoURL.toString(),
       createdAt: '',
       isOnline: false,
       lastActive: '',
-      pushToken: '');
+      pushToken: '', 
+      occupation: [], 
+      eduHistory: [], 
+      experience: [], 
+      certification: [], 
+      skills: [], 
+      universities: [], 
+      schools: [], 
+      hobbies: [], 
+      location: '');
 
   // to return current user
   static User get user => auth.currentUser!;
@@ -56,7 +66,7 @@ class APIs {
     // for handling foreground messages
     // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     //   log('Got a message whilst in the foreground!');
-    //   log('Message data: ${message.data}');
+    //   log('Message data: ${message.data}');S
 
     //   if (message.notification != null) {
     //     log('Message also contained a notification: ${message.notification}');
@@ -157,7 +167,15 @@ class APIs {
         createdAt: time,
         isOnline: false,
         lastActive: time,
-        pushToken: '');
+        pushToken: '', occupation: [], 
+        eduHistory: [], 
+        skills: [], 
+        experience: [], 
+        certification: [], 
+        universities: [], 
+        schools: [], 
+        hobbies: [], 
+        location: '');
 
     return await firestore
         .collection('users')
