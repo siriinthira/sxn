@@ -48,10 +48,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
         // app logo
         Positioned(
-          top: mq.height * .15,
+          top: mq.height * .25,
           right:  mq.width * .25 ,
           width: mq.width * .5,
-          child: Image.asset('images/networking.png'),
+          child: Image.asset('images/myapp_icon1.png'),
           ),
           
         // google login button  

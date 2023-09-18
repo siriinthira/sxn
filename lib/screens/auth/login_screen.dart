@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:app/screens/home_screen.dart';
+import 'package:app/screens/chat_home.dart';
+import 'package:app/screens/contact_screen.dart';
+import 'package:app/screens/log_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,7 +11,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../api/apis.dart';
 // import '../../helper/dialogs.dart';
 import '../../main.dart';
-import '../chat_home.dart';
+// import '../chat_home.dart';
 
 //login screen -- implements google sign in or sign up feature for app
 class LoginScreen extends StatefulWidget {
@@ -47,11 +49,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
         if ((await APIs.userExists())) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              context, MaterialPageRoute(builder: (_) => const LogScreen()));
         } else {
           await APIs.createUser().then((value) {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                context, MaterialPageRoute(builder: (_) => const ContactScreen()));
           });
         }
       }
@@ -99,22 +101,22 @@ class _LoginScreenState extends State<LoginScreen> {
       //app bar
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Welcome to We Chat'),
+        title: const Text('Welcome to Skills x Network'),
       ),
 
       //body
       body: Stack(children: [
         //app logo
         AnimatedPositioned(
-            top: mq.height * .15,
-            right: _isAnimate ? mq.width * .25 : -mq.width * .5,
-            width: mq.width * .5,
+            top: mq.height * .08,
+            right: _isAnimate ? mq.width * -.16 : -mq.width * .2,
+            width: mq.width * .95,
             duration: const Duration(seconds: 1),
-            child: Image.asset('images/chat1.png')),
+            child: Image.asset('images/welcomehuman3d.png')),
 
         //google login button
         Positioned(
-            bottom: mq.height * .15,
+            bottom: mq.height * .30,
             left: mq.width * .05,
             width: mq.width * .9,
             height: mq.height * .06,
@@ -128,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
 
                 //google icon
-                icon: Image.asset('images/google_icon.png', height: mq.height * .03),
+                icon: Image.asset('images/google_icon.png', height: mq.height * .04),
 
                 //login with google label
                 label: RichText(

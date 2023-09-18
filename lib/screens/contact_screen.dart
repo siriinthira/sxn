@@ -10,14 +10,14 @@ import '../widgets/chat_user_card.dart';
 import 'profile_screen.dart';
 
 //home screen -- where all available contacts are shown
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class ContactScreen extends StatefulWidget {
+  const ContactScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ContactScreen> createState() => _ContactScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ContactScreenState extends State<ContactScreen> {
   
   // for storing all users
   List<ChatUser> _list = [];
@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     },
                   )
-                : const Text('Skills X Network'),
+                : const Text('Contact'),
 
 
             actions: [
@@ -121,26 +121,28 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(
                             builder: (_) => ProfileScreen(user: APIs.me)));
                   },
-                  icon: const Icon(Icons.more_vert))
+                  icon: const Icon(Icons.person_2_outlined))
             ],
           ),
 
 
-          //floating button to add new user
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: FloatingActionButton(
-                onPressed: () {
-                  _addChatUserDialog();
-                },
-                child: const Icon(Icons.add_comment_rounded)),
-          ),
+          // //floating button to add new user
+          // floatingActionButton: Padding(
+          //   padding: const EdgeInsets.only(bottom: 10),
+          //   child: FloatingActionButton(
+          //       onPressed: () {
+          //         _addChatUserDialog();
+          //       },
+          //       child: const Icon(Icons.add_comment_rounded)),
+          // ),
 
 
 
 
           //body
           body: StreamBuilder(
+            
+         
             stream: APIs.getMyUsersId(),
 
             //get id of only known users
