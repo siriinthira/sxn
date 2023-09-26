@@ -210,14 +210,6 @@ class APIs {
   }
 
 
-
-
-
-
-
-
-
-
   // for adding an user to my user when first message is send
   static Future<void> sendFirstMessage(
       ChatUser chatUser, String msg, Type type) async {
@@ -377,3 +369,5 @@ class APIs {
         .update({'msg': updatedMsg});
   }
 }
+
+//aa
