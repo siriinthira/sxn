@@ -3,7 +3,7 @@
 
 echo "# sxn" >> README.md
 git init
-git add README.md
+git add *
 git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/siriinthira/sxn.git
@@ -12,9 +12,13 @@ git push -u origin main
 
 …or push an existing repository from the command line
 
-git branch -M main
 git add *
+
+git commit -m "uptodate"
+
+git branch -M main
+
 git push -u origin main
 
-git commit -m "first present"
+
 
