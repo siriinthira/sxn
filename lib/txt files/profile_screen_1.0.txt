@@ -186,6 +186,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // for adding some space
                      SizedBox(height: mq.height * .02),
 
+                    // TextFormField(
+                    //   initialValue: widget.user.occupation.join(', '),
+                    //   decoration: InputDecoration(
+                    //       prefixIcon: const Icon(Icons.info_outline,
+                    //           color: Colors.blue),
+                    //       border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(12)),
+                    //       hintText: 'eg. I work as a...',
+                    //       label: const Text('Occupation')),
+                    // ),
+
+                    // SizedBox(height: mq.height * .02),
+
                     Container(
                       width: 800,
                       child: Card(
@@ -266,8 +279,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
 
-                    // for adding some space
                     SizedBox(height: mq.height * .05),
+
+                    // Card(
+                    //     elevation: 4, // Adds a shadow to the card
+                    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.all(16),
+                    //       child:
+                    //       Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Text(
+                    //             'skills',
+                    //             style: TextStyle(
+                    //               color: Colors.blue,
+                    //               fontSize: 18,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //           SizedBox(height: 8), // Add some spacing
+                    //           Text(
+                    //             widget.user.skills.join(',\n '),
+                    //             style: TextStyle(
+                    //               fontSize: 16,
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+
+                    //   SizedBox(height: mq.height * .02),
+
+                    // Card(
+                    //     elevation: 4, // Adds a shadow to the card
+                    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.all(16),
+                    //       child: Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Text(
+                    //             'Experience',
+                    //             style: TextStyle(
+                    //               color: Colors.blue,
+                    //               fontSize: 18,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //           SizedBox(height: 8), // Add some spacing
+                    //           Text(
+                    //             widget.user.experience.join(',\n '), // Display the experience as a comma-separated string
+                    //             style: TextStyle(
+                    //               fontSize: 16,
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+
+                    // for adding some space
+                    SizedBox(height: mq.height * .02),
 
                     // update profile button
                     ElevatedButton.icon(
@@ -278,14 +352,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (_formKey.currentState!.validate()) {
                           log('inside validator');
                           _formKey.currentState!.save();
-                          APIs.updateUserInfo(
-                          widget.user.username, // try widget.user.selfIntro after this line later
-                          APIs.me.selfIntro, // Use the updated selfIntro value
-                          ).then((value) {
+                          APIs.updateUserInfo(widget.user.username).then((value) {
                             Dialogs.showSnackbar(
                                 context, 'Profile Updated Successfully!');
-                          }
-                          );
+                          });
                         }
                       },
                       icon: const Icon(Icons.edit, size: 28),

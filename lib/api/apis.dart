@@ -21,7 +21,7 @@ class APIs {
   // for accessing firebase storage
   static FirebaseStorage storage = FirebaseStorage.instance;
 
-  // for storing self information
+  //for storing self information  ทำไมต้องสร้างตรงนี้ขึ้นมาใหม่ในเมื่อใน หน้า chat_user.dart มีโครงสร้างอยู่แล้ว ให้ดิวช่วยดู ทำความเข้าใจกัน
   static ChatUser me = ChatUser(
       id: user.uid,
       username: user.displayName.toString(),
@@ -167,7 +167,8 @@ class APIs {
         createdAt: time,
         isOnline: false,
         lastActive: time,
-        pushToken: '', occupation: [], 
+        pushToken: '', 
+        occupation: [], 
         eduHistory: [], 
         skills: [], 
         experience: [], 
@@ -222,12 +223,23 @@ class APIs {
   }
 
   // for updating user information
-  static Future<void> updateUserInfo() async {
+  // static Future<void> updateUserInfo(String username, String selfIntro) async {
+  //   await firestore.collection('users').doc(user.uid).update({
+  //     'name': me.username,
+  //     'about': me.selfIntro,
+  //   });
+  // }
+  static Future<void> updateUserInfo(String username, String selfIntro) async {
+  try {
     await firestore.collection('users').doc(user.uid).update({
-      'name': me.username,
-      'about': me.selfIntro,
+      'username': username,   // Use the provided username argument
+      'selfIntro': selfIntro, // Use the provided selfIntro argument
     });
+  } catch (e) {
+    print('Error updating user info: $e');
   }
+}
+
 
   // update profile picture of user
   static Future<void> updateProfilePicture(File file) async {

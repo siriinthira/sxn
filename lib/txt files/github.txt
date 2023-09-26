@@ -13,7 +13,8 @@ git push -u origin main
 …or push an existing repository from the command line
 
 git branch -M main
-git push -u origin main
 git add *
+git push -u origin main
+
 git commit -m "first present"
 

@@ -210,27 +210,26 @@ class ChatUser {
 
   //declare properties to store the user's attributes
   //late final  can be initialized after object creation but cannot be changed once set.
-  
-  late final String image;
-  late final List<String> occupation;
-  late final List<String> eduHistory;
-  late final List<String> experience;
-  late final List<String> certification;
-  late final List<String> skills;
-  late final List<String> universities;
-  late final List<String> schools;
-  late final List<String> hobbies;
-  late final String location;
-  late final String lastActive;
-  late final bool isOnline;
-  late final String id;
-  late final String selfIntro;
-  late final String email;
-  late final String username;
+  late  String selfIntro;
+  late  String username;
+  late  String image;
+  late  bool isOnline;
+  late String pushToken;
+  late String lastActive;
+  late String id;
+  late String email;
+  late String createdAt;
+  late List<String> occupation;
+  late List<String> eduHistory;
+  late List<String> experience;
+  late List<String> certification;
+  late List<String> skills;
+  late List<String> universities;
+  late List<String> schools;
+  late List<String> hobbies;
+  late String location;
 
 
-  late final String pushToken;
-  late final String createdAt;
  
   
   // It takes a Map<String, dynamic> as input.
