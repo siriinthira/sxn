@@ -45,10 +45,6 @@ class APIs {
   // to return current user
   static User get user => auth.currentUser!;
 
-
-
-
-
   // for accessing firebase messaging (Push Notification)
   static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
 
@@ -56,22 +52,25 @@ class APIs {
   static Future<void> getFirebaseMessagingToken() async {
     await fMessaging.requestPermission();
 
+
     await fMessaging.getToken().then((t) {
       if (t != null) {
         me.pushToken = t;
         log('Push Token: $t');
+        print('Token: $t');
       }
     });
 
-    // for handling foreground messages
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   log('Got a message whilst in the foreground!');
-    //   log('Message data: ${message.data}');S
 
-    //   if (message.notification != null) {
-    //     log('Message also contained a notification: ${message.notification}');
-    //   }
-    // });
+    // for handling foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      log('Got a message whilst in the foreground!');
+      log('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        log('Message also contained a notification: ${message.notification}');
+      }
+    });
   }
 
   // for sending push notification
@@ -94,8 +93,9 @@ class APIs {
           headers: {
             HttpHeaders.contentTypeHeader: 'application/json',
             HttpHeaders.authorizationHeader:
-                'key=AAAAQ0Bf7ZA:APA91bGd5IN5v43yedFDo86WiSuyTERjmlr4tyekbw_YW6JrdLFblZcbHdgjDmogWLJ7VD65KGgVbETS0Px7LnKk8NdAz4Z-AsHRp9WoVfArA5cNpfMKcjh_MQI-z96XQk5oIDUwx8D1'
-          },
+          //       'key=AAAAQ0Bf7ZA:APA91bGd5IN5v43yedFDo86WiSuyTERjmlr4tyekbw_YW6JrdLFblZcbHdgjDmogWLJ7VD65KGgVbETS0Px7LnKk8NdAz4Z-AsHRp9WoVfArA5cNpfMKcjh_MQI-z96XQk5oIDUwx8D1'
+                   'key=AAAA8fNKb2I:APA91bGceixQ-iH00P0S5NhojFYRgDXcOBXFH7LAHvgprlNbSAWpuf-rrAWwiDyolLvXcPY2nLtUb_sZez4UT9sH3pZkXg0_z5zLX5Tm0YMzU3ljlk9ewXB9TztoQP66IhNsXmNA7Cpl'
+           },
           body: jsonEncode(body));
       log('Response status: ${res.statusCode}');
       log('Response body: ${res.body}');
@@ -229,6 +229,7 @@ class APIs {
   //     'about': me.selfIntro,
   //   });
   // }
+  
   static Future<void> updateUserInfo(String username, String selfIntro) async {
   try {
     await firestore.collection('users').doc(user.uid).update({
@@ -307,7 +308,7 @@ class APIs {
     //message sending time (also used as id)
     final time = DateTime.now().millisecondsSinceEpoch.toString();
 
-    //message to send
+    //message tonotification send
     final Message message = Message(
         toId: chatUser.id,
         msg: msg,

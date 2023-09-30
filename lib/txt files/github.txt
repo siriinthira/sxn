@@ -12,11 +12,9 @@ git push -u origin main
 
 …or push an existing repository from the command line
 
-git add *
+git branch -M main
 
 git commit -m "uptodate"
-
-git branch -M main
 
 git push -u origin main
 
