@@ -1,0 +1,108 @@
+
+
+class HomeUserCard extends StatefulWidget {
+  final ChatUser user;
+  final List<ChatUser> userList;
+
+  const HomeUserCard({super.key, required this.user, required this.userList});
+
+  @override
+  State<HomeUserCard> createState() => _HomeUserCardState();
+}
+
+class _HomeUserCardState extends State<HomeUserCard> {
+  //last message info (if null --> no message)
+  Message? _message;
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        // For navigating to user's profile screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ChatScreen(user: widget.user),
+          ),
+        );
+      },
+      child: Column(
+        children: [
+          // add search bar and search functions
+
+
+          Container(
+            height: 140,
+            child: Card(
+              
+             // elevation: 0.5,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Column(
+                children: [
+                  
+                  ListTile(
+                    // User profile picture
+                    leading: InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => ProfileDialog(user: widget.user),
+                        );
+                      },
+                      child: CachedNetworkImage(
+                        width: 100,
+                        height: 100,
+                        imageUrl: widget.user.image,
+                        errorWidget: (context, url, error) =>
+                            const CircleAvatar(
+                                child: Icon(CupertinoIcons.person)),
+                      ),
+                    ),
+                    // User name
+                    title: Text(
+                      widget.user.username,
+                      style: TextStyle(fontSize: 23),
+                    ),
+                    // Last message
+                    subtitle: Text(
+                      widget.user.selfIntro,
+                      style: TextStyle(fontSize: 20),
+                      maxLines: 3,
+                    ),
+                    
+                  ),
+                 // Chat Button at bottom-right corner
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: Icon(Icons.chat),
+                      onPressed: () {
+                        // For navigating to chat screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ChatScreen(user: widget.user),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          
+        ],
+      ),
+    );
+  }
+
+
+
+}
+

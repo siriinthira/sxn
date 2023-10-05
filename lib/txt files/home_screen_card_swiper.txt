@@ -7,21 +7,27 @@ import '../models/chat_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
-import '../widgets/chat_user_card.dart';
-import 'package:app/screens/home_screen.dart';
+import 'package:card_swiper/card_swiper.dart';
+import 'package:app/screens/contact_screen.dart';
+import 'package:app/widgets/home_user_card.dart';
+
+
+
+
+
 
 
 //home screen -- where all available contacts are shown
-class ContactScreen extends StatefulWidget {
-  const ContactScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<ContactScreen> createState() => _ContactScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _ContactScreenState extends State<ContactScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   
-  // for storing all users
+  // for storing all users : Your list of ChatUser data
   List<ChatUser> _list = [];
 
   // for storing searched items
@@ -56,6 +62,10 @@ class _ContactScreenState extends State<ContactScreen> {
     });
   }
 
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return 
@@ -82,6 +92,7 @@ class _ContactScreenState extends State<ContactScreen> {
           //app bar
 
           appBar: AppBar(
+            backgroundColor: Colors.greenAccent,
 
             leading: 
              IconButton(
@@ -89,15 +100,15 @@ class _ContactScreenState extends State<ContactScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => HomeScreen()));
+                            builder: (_) => ContactScreen()));
                   },
-                  icon: const Icon(Icons.home),),
+                  icon: const Icon(Icons.arrow_back),),
             //const Icon(CupertinoIcons.home),
 
             title: _isSearching
                 ? TextField(
                     decoration: const InputDecoration(
-                        border: InputBorder.none, hintText: 'Name, Email, ...'),
+                        border: InputBorder.none, hintText: 'Name...'),
                     autofocus: true,
                     style: const TextStyle(fontSize: 17, letterSpacing: 0.5),
                     
@@ -116,7 +127,7 @@ class _ContactScreenState extends State<ContactScreen> {
                       }
                     },
                   )
-                : const Text('Contact'),
+                : const Text('Home'),
 
 
             actions: [
@@ -142,6 +153,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   },
                   icon: const Icon(Icons.person_2_outlined),),
             ],
+            
           ),
 
 
@@ -159,72 +171,108 @@ class _ContactScreenState extends State<ContactScreen> {
 
 
           //body
-          body: StreamBuilder(
-            
-            stream: APIs.getMyUsersId(),
+          body: 
+          
+          Column(
+            children: [
 
-            //get id of only known users
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                //if data is loading
-                case ConnectionState.waiting:
-                case ConnectionState.none:
-                  return const Center(child: CircularProgressIndicator());
-
-                //if some or all data is loaded then show it
-                case ConnectionState.active:
-                case ConnectionState.done:
-                  return StreamBuilder(
-                    stream: APIs.getAllUsers(
-                        snapshot.data?.docs.map((e) => e.id).toList() ?? []),
-
-                    //get only those user, who's ids are provided
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        //if data is loading
-                        case ConnectionState.waiting:
-                        case ConnectionState.none:
-                        // return const Center(child: CircularProgressIndicator());
-
-                        //if some or all data is loaded then show it
-                        case ConnectionState.active:
-                        case ConnectionState.done:
-                          final data = snapshot.data?.docs;
-                          _list = data
-                                  ?.map((e) => ChatUser.fromJson(e.data()))
-                                  .toList() ?? [];
-
-
-
-                          if (_list.isNotEmpty) {
-                            return ListView.builder(
-                                itemCount: _isSearching
-                                    ? _searchList.length
-                                    : _list.length,
-                                padding: EdgeInsets.only(top: mq.height * .01),
-                                physics: const BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return ChatUserCard(
-                                      user: _isSearching
-                                          ? _searchList[index]
-                                          : _list[index]);
-                                });
-                          } else {
-                            return const Center(
-                              child: Text('No Connections Found!',
-                                  style: TextStyle(fontSize: 20)),
-                            );
-                          }
-                      }
-                    },
-                  );
-              }
-            },
+              SizedBox(height: 35),
+                Text('Recommend users', textAlign: TextAlign.left, style: TextStyle(
+                  fontWeight: FontWeight.w600, color: Colors.blue.shade800, fontSize: 23
+                ),),
+                SizedBox(height: 15),
+                Text('swipe left and right to see other user', textAlign: TextAlign.left, style: TextStyle(
+                  fontWeight: FontWeight.w600, color: Colors.grey.shade600, fontSize: 17
+                ),),
+                SizedBox(height: 15),
+                
+              Expanded(
+                child: StreamBuilder(
+                  
+                  stream: APIs.getMyUsersId(),
+              
+                  //get id of only known users
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      //if data is loading
+                      case ConnectionState.waiting:
+                      case ConnectionState.none:
+                        return const Center(child: CircularProgressIndicator());
+              
+                      //if some or all data is loaded then show it
+                      case ConnectionState.active:
+                      case ConnectionState.done:
+                        return StreamBuilder(
+                          stream: APIs.getAllUsers(
+                              snapshot.data?.docs.map((e) => e.id).toList() ?? []),
+              
+                          //get only those user, who's ids are provided
+                          builder: (context, snapshot) {
+                            switch (snapshot.connectionState) {
+                              //if data is loading
+                              case ConnectionState.waiting:
+                              case ConnectionState.none:
+                              // return const Center(child: CircularProgressIndicator());
+              
+                              //if some or all data is loaded then show it
+                              case ConnectionState.active:
+                              case ConnectionState.done:
+                                final data = snapshot.data?.docs;
+                                _list = data
+                                        ?.map((e) => ChatUser.fromJson(e.data()))
+                                        .toList() ?? [];
+              
+              
+              
+                                if (_list.isNotEmpty) {
+                                  return 
+                                  Swiper(
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return HomeUserCard(
+                                        user: _isSearching ? _searchList[index] : _list[index],
+                                      );
+                                    },
+                                    itemCount: _isSearching ? _searchList.length : _list.length,
+                                  );
+                                  // ListView.builder(
+                                  //     itemCount: _isSearching
+                                  //         ? _searchList.length
+                                  //         : _list.length,
+                                  //     padding: EdgeInsets.only(top: mq.height * .01),
+                                  //     physics: const BouncingScrollPhysics(),
+                                  //     itemBuilder: (context, index) {
+                                  //       return HomeUserCard(
+                                  //           user: _isSearching
+                                  //               ? _searchList[index]
+                                  //               : _list[index]);
+                                  //     });
+                                } else {
+                                  return const Center(
+                                    child: Text('No Connections Found!',
+                                        style: TextStyle(fontSize: 20)),
+                                  );
+                                }
+                            }
+                          },
+                        );
+                    }
+                  },
+                ),
+              ),
+            ], //children
           ),
+
+
         ),
       ),
     );
   }
+
+
+
+
+
+
 
   // for adding new chat user
   void _addChatUserDialog() {

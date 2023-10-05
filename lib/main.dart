@@ -1,11 +1,13 @@
 // import 'package:app/api/firebase_api.dart';
+import 'package:app/models/chat_user.dart';
 import 'package:app/screens/auth/splashscreen.dart';
+import 'package:app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 // import 'package:app/screens/auth/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:app/firebase_options.dart';
 import 'package:flutter/services.dart';
-
+import 'package:app/screens/home_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -68,7 +70,8 @@ class MyApp extends StatelessWidget {
         fontWeight: FontWeight.normal, fontSize: 19), 
         backgroundColor: Colors.white,),
         ),
-     home: SplashScreen(), //home: const MyHomePage(title: 'chat'),
+        home: const SplashScreen(),
+     //home: SplashScreen(), //home: const MyHomePage(title: 'chat'),
     // home: MyHomePage(),
     );
   }

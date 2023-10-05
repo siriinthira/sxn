@@ -12,16 +12,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 
 //card to represent a single user in home screen
-class ChatUserCard extends StatefulWidget {
+class SearchFilterCard extends StatefulWidget {
   final ChatUser user;
 
-  const ChatUserCard({super.key, required this.user});
+  const SearchFilterCard({super.key, required this.user});
 
   @override
-  State<ChatUserCard> createState() => _ChatUserCardState();
+  State<SearchFilterCard> createState() => _SearchFilterCardState();
 }
 
-class _ChatUserCardState extends State<ChatUserCard> {
+class _SearchFilterCardState extends State<SearchFilterCard> {
   //last message info (if null --> no message)
   Message? _message;
 

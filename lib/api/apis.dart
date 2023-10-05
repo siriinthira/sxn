@@ -1,14 +1,14 @@
+import 'dart:io';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart';
-import '../models/chat_user.dart';
 import '../models/message.dart';
+import '../models/chat_user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 
 class APIs {
   
@@ -41,6 +41,15 @@ class APIs {
       schools: [], 
       hobbies: [], 
       location: '');
+
+  // get current user
+  Future<ChatUser> getCurrentUser() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  // Retrieve user data from your database based on the user's ID
+  // Construct a ChatUser object and return it
+  // Example: ChatUser chatUser = await fetchUserDataFromDatabase(user.uid);
+  return chatUser;
+}
 
   // to return current user
   static User get user => auth.currentUser!;

@@ -8,18 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import '../widgets/chat_user_card.dart';
-import 'package:app/screens/home_screen.dart';
+import 'package:card_slider/card_slider.dart';
+import 'package:app/widgets/home_user_card.dart';
 
 
 //home screen -- where all available contacts are shown
-class ContactScreen extends StatefulWidget {
-  const ContactScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<ContactScreen> createState() => _ContactScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _ContactScreenState extends State<ContactScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   
   // for storing all users
   List<ChatUser> _list = [];
@@ -56,16 +57,13 @@ class _ContactScreenState extends State<ContactScreen> {
     });
   }
 
-  @override
+
+
+ @override
   Widget build(BuildContext context) {
-    return 
-    
-    GestureDetector(
-      //for hiding keyboard when a tap is detected on screen
+    return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
-        //if search is on & back button is pressed then close search
-        //or else simply close current screen on back button click
         onWillPop: () {
           if (_isSearching) {
             setState(() {
@@ -76,143 +74,75 @@ class _ContactScreenState extends State<ContactScreen> {
             return Future.value(true);
           }
         },
-        child: 
-        
-        Scaffold(
-          //app bar
-
+        child: Scaffold(
           appBar: AppBar(
-
-            leading: 
-             IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => HomeScreen()));
-                  },
-                  icon: const Icon(Icons.home),),
-            //const Icon(CupertinoIcons.home),
-
-            title: _isSearching
-                ? TextField(
-                    decoration: const InputDecoration(
-                        border: InputBorder.none, hintText: 'Name, Email, ...'),
-                    autofocus: true,
-                    style: const TextStyle(fontSize: 17, letterSpacing: 0.5),
-                    
-                    onChanged: (val) {
-                      //search logic
-                      _searchList.clear();
-                      //when search text changes then updated search list
-                      for (var i in _list) {
-                        if (i.username.toLowerCase().contains(val.toLowerCase()) ||
-                            i.email.toLowerCase().contains(val.toLowerCase())) {
-                          _searchList.add(i);
-                          setState(() {
-                            _searchList;
-                          });
-                        }
-                      }
-                    },
-                  )
-                : const Text('Contact'),
-
-
-            actions: [
-
-              //search user button
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _isSearching = !_isSearching;
-                    });
-                  },
-                  icon: Icon(_isSearching
-                      ? CupertinoIcons.clear_circled_solid
-                      : Icons.search)),
-
-              //profile button
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => ProfileScreen(user: APIs.me)));
-                  },
-                  icon: const Icon(Icons.person_2_outlined),),
-            ],
+            title: Text('Home'),
+            backgroundColor: Colors.greenAccent,
+            // ... Your app bar code ...
           ),
-
-
-          // //floating button to add new user
-          // floatingActionButton: Padding(
-          //   padding: const EdgeInsets.only(bottom: 10),
-          //   child: FloatingActionButton(
-          //       onPressed: () {
-          //         _addChatUserDialog();
-          //       },
-          //       child: const Icon(Icons.add_comment_rounded)),
-          // ),
-
-
-
-
-          //body
           body: StreamBuilder(
-            
             stream: APIs.getMyUsersId(),
-
-            //get id of only known users
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
-                //if data is loading
                 case ConnectionState.waiting:
                 case ConnectionState.none:
                   return const Center(child: CircularProgressIndicator());
 
-                //if some or all data is loaded then show it
                 case ConnectionState.active:
                 case ConnectionState.done:
                   return StreamBuilder(
                     stream: APIs.getAllUsers(
-                        snapshot.data?.docs.map((e) => e.id).toList() ?? []),
-
-                    //get only those user, who's ids are provided
+                      snapshot.data?.docs.map((e) => e.id).toList() ?? [],
+                    ),
                     builder: (context, snapshot) {
                       switch (snapshot.connectionState) {
-                        //if data is loading
                         case ConnectionState.waiting:
                         case ConnectionState.none:
-                        // return const Center(child: CircularProgressIndicator());
-
-                        //if some or all data is loaded then show it
                         case ConnectionState.active:
                         case ConnectionState.done:
                           final data = snapshot.data?.docs;
                           _list = data
-                                  ?.map((e) => ChatUser.fromJson(e.data()))
-                                  .toList() ?? [];
-
-
+                              ?.map((e) => ChatUser.fromJson(e.data()))
+                              .toList() ?? [];
 
                           if (_list.isNotEmpty) {
-                            return ListView.builder(
-                                itemCount: _isSearching
-                                    ? _searchList.length
-                                    : _list.length,
-                                padding: EdgeInsets.only(top: mq.height * .01),
-                                physics: const BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return ChatUserCard(
-                                      user: _isSearching
-                                          ? _searchList[index]
-                                          : _list[index]);
-                                });
+                            return Column(
+                              children: [ 
+                                SizedBox(height: 50,),
+                                Container(
+                                  width: 150,
+                                  height: 35,
+                                  padding: EdgeInsets.only(left: 10),
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromARGB(255, 184, 214, 239),
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      ' Recommend',
+                                      style: TextStyle(
+                                        color: Color.fromARGB(255, 2, 13, 81),
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                SizedBox(height: 12),
+                                CardSlider( // Replace ListView.builder with CardSlider
+                                  cards: _isSearching
+                                      ? _searchList.map((user) => _buildUserCard(user)).toList()
+                                      : _list.map((user) => _buildUserCard(user)).toList(),
+                                  cardHeight: 0.4,
+                                  // Set your initial card index
+                                ),
+                              ],
+                            );
                           } else {
                             return const Center(
-                              child: Text('No Connections Found!',
-                                  style: TextStyle(fontSize: 20)),
+                              child: Text('No Connections Found!', style: TextStyle(fontSize: 20)),
                             );
                           }
                       }
@@ -224,6 +154,12 @@ class _ContactScreenState extends State<ContactScreen> {
         ),
       ),
     );
+  }
+  
+
+  // Helper method to build a user card widget
+  Widget _buildUserCard(ChatUser user) {
+    return HomeUserCard(user: user);
   }
 
   // for adding new chat user

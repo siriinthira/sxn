@@ -1,16 +1,17 @@
-import 'dart:developer';
 import 'dart:io';
-
-// import 'package:app/screens/chat_home.dart';
-import 'package:app/screens/contact_screen.dart';
-import 'package:app/screens/log_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer';
+import '../../main.dart';
+import '../../api/apis.dart';
 import 'package:flutter/material.dart';
+import 'package:app/screens/log_screen.dart';
+import 'package:app/screens/home_screen.dart';
+import 'package:app/screens/contact_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../api/apis.dart';
+// import 'package:app/screens/chat_home.dart';
+
 // import '../../helper/dialogs.dart';
-import '../../main.dart';
 // import '../chat_home.dart';
 
 //login screen -- implements google sign in or sign up feature for app

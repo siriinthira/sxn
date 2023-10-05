@@ -1,25 +1,24 @@
 import '../main.dart';
 import 'dart:developer';
 import '../api/apis.dart';
-import 'profile_screen.dart';
 import '../helper/dialogs.dart';
 import '../models/chat_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import '../widgets/chat_user_card.dart';
-import 'package:app/screens/home_screen.dart';
-
+import 'package:app/screens/profile_screen.dart';
+import 'package:app/widgets/home_user_card.dart';
 
 //home screen -- where all available contacts are shown
-class ContactScreen extends StatefulWidget {
-  const ContactScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<ContactScreen> createState() => _ContactScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _ContactScreenState extends State<ContactScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   
   // for storing all users
   List<ChatUser> _list = [];
@@ -58,9 +57,7 @@ class _ContactScreenState extends State<ContactScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    
-    GestureDetector(
+    return GestureDetector(
       //for hiding keyboard when a tap is detected on screen
       onTap: () => FocusScope.of(context).unfocus(),
       child: WillPopScope(
@@ -80,20 +77,8 @@ class _ContactScreenState extends State<ContactScreen> {
         
         Scaffold(
           //app bar
-
           appBar: AppBar(
-
-            leading: 
-             IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => HomeScreen()));
-                  },
-                  icon: const Icon(Icons.home),),
-            //const Icon(CupertinoIcons.home),
-
+            leading: const Icon(CupertinoIcons.home),
             title: _isSearching
                 ? TextField(
                     decoration: const InputDecoration(
@@ -116,11 +101,10 @@ class _ContactScreenState extends State<ContactScreen> {
                       }
                     },
                   )
-                : const Text('Contact'),
+                : const Text('Home'),
 
 
             actions: [
-
               //search user button
               IconButton(
                   onPressed: () {
@@ -132,7 +116,7 @@ class _ContactScreenState extends State<ContactScreen> {
                       ? CupertinoIcons.clear_circled_solid
                       : Icons.search)),
 
-              //profile button
+              //more features button
               IconButton(
                   onPressed: () {
                     Navigator.push(
@@ -140,7 +124,7 @@ class _ContactScreenState extends State<ContactScreen> {
                         MaterialPageRoute(
                             builder: (_) => ProfileScreen(user: APIs.me)));
                   },
-                  icon: const Icon(Icons.person_2_outlined),),
+                  icon: const Icon(Icons.person_2_outlined))
             ],
           ),
 
@@ -204,7 +188,7 @@ class _ContactScreenState extends State<ContactScreen> {
                                 padding: EdgeInsets.only(top: mq.height * .01),
                                 physics: const BouncingScrollPhysics(),
                                 itemBuilder: (context, index) {
-                                  return ChatUserCard(
+                                  return HomeUserCard(
                                       user: _isSearching
                                           ? _searchList[index]
                                           : _list[index]);
@@ -225,6 +209,7 @@ class _ContactScreenState extends State<ContactScreen> {
       ),
     );
   }
+
 
   // for adding new chat user
   void _addChatUserDialog() {
