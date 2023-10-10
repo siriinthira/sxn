@@ -27,14 +27,14 @@ import 'package:app/widgets/search_filter_user_card.dart';
 
 
 //home screen -- where all available contacts are shown
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class NewHomeScreen extends StatefulWidget {
+  const NewHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<NewHomeScreen> createState() => _NewHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _NewHomeScreenState extends State<NewHomeScreen> {
   
   // for storing all users : Your list of ChatUser data
   List<ChatUser> _list = [];
@@ -199,223 +199,18 @@ Future<void> readData() async {
         children: [
       
          
-        //  SizedBox(height: 8), 
-
-        //     Text('Recommend users', textAlign: TextAlign.left, style: TextStyle(
-        //       fontWeight: FontWeight.w600, color: Colors.blue.shade800, fontSize: 23
-        //     ),),
-          
-        //   SizedBox(height: 8), // Adjust the spacing here as needed
-
-        //     Text('swipe left and right to see other user', textAlign: TextAlign.left, style: TextStyle(
-        //       fontWeight: FontWeight.w600, color: Colors.grey.shade600, fontSize: 17
-        //     ),),
-          
-        //   SizedBox(height: 8), 
-
-          // Flexible(
-
-          //   child: StreamBuilder(
-              
-          //     stream: APIs.getMyUsersId(),
-          
-          //     //get id of only known users
-          //     builder: (context, snapshot) {
-          //       switch (snapshot.connectionState) {
-          //         //if data is loading
-          //         case ConnectionState.waiting:
-          //         case ConnectionState.none:
-          //           return const Center(child: CircularProgressIndicator());
-          
-          //         //if some or all data is loaded then show it
-          //         case ConnectionState.active:
-          //         case ConnectionState.done:
-          //           return StreamBuilder(
-          //             stream: APIs.getAllUsers(
-          //                 snapshot.data?.docs.map((e) => e.id).toList() ?? []),
-          
-          //             //get only those user, who's ids are provided
-          //             builder: (context, snapshot) {
-          //               switch (snapshot.connectionState) {
-          //                 //if data is loading
-          //                 case ConnectionState.waiting:
-          //                 case ConnectionState.none:
-          //                 // return const Center(child: CircularProgressIndicator());
-          
-          //                 //if some or all data is loaded then show it
-          //                 case ConnectionState.active:
-          //                 case ConnectionState.done:
-          //                   final data = snapshot.data?.docs;
-          //                   _list = data
-          //                           ?.map((e) => ChatUser.fromJson(e.data()))
-          //                           .toList() ?? [];
-          
-          
-          
-          //                   if (_list.isNotEmpty) {
-          //                     return 
-          //                     Swiper(
-          //                       itemBuilder: (BuildContext context, int index) {
-          //                         return 
-
-          //                         HomeUserCard(
-          //                           user: _list[index], 
-          //                           );
-          //                         },
-          //                       itemCount:  _list.length,
-                                  
-          //                       //   HomeUserCard(
-          //                       //     user: _isSearching ? _searchList[index] : _list[index],
-          //                       //   );
-          //                       // },
-          //                       // itemCount: _isSearching ? _searchList.length : _list.length,
-
-
-          //                     );
-          //                     // ListView.builder(
-          //                     //     itemCount: _isSearching
-          //                     //         ? _searchList.length
-          //                     //         : _list.length,
-          //                     //     padding: EdgeInsets.only(top: mq.height * .01),
-          //                     //     physics: const BouncingScrollPhysics(),
-          //                     //     itemBuilder: (context, index) {
-          //                     //       return HomeUserCard(
-          //                     //           user: _isSearching
-          //                     //               ? _searchList[index]
-          //                     //               : _list[index]);
-          //                     //     });
-          //                   } else {
-          //                     return const Center(
-          //                       child: Text('No Connections Found!',
-          //                           style: TextStyle(fontSize: 20)),
-          //                     );
-          //                   }
-          //               }
-          //             },
-          //           );
-          //       }
-          //     },
-          //   ),
-          // ),
-
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              SizedBox(height: 35,),
-
-              Center(
-                child: Text('User Result from Search n Filter', textAlign: TextAlign.left, style: TextStyle(
-                fontWeight: FontWeight.w600, color: Colors.blue.shade800, fontSize: 23
-                ),),
-              ),
-                TextField(
-            onChanged: (value) {
-              setState(() {
-                itemListOnSearch = chatUserData
-                    .where((element) => element.skills
-                        // .toLowerCase()
-                        .contains(value.toLowerCase()))
-                    .toList();
-              });
-            },
-            controller: _valueContains,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              errorBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              contentPadding: EdgeInsets.all(15),
-              hintText: '       Search',
-              //
-            ),
-          ),
-          itemListOnSearch.length == 0
-          ? Center(child: CircularProgressIndicator())
-          : Expanded(
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,),
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 100,
-                            child:
-                                Image.network(itemListOnSearch[index].image),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            itemListOnSearch[index].occupation.join(' '),
-                            maxLines: 1,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 2,
-                          ),
-                          Text(
-                            itemListOnSearch[index].username,
-                            maxLines: 1,
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 2,
-                          ),
-                          Text(
-                            itemListOnSearch[index].skills.join(' ,'),
-                            maxLines: 1,
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                           SizedBox(
-                            height: 2,
-                          ),
-                          //   Text(
-                          //   itemListOnSearch[index].occupation.join(', '),
-                          //   maxLines: 1,
-                          //   style: TextStyle(
-                          //       fontSize: 16, fontWeight: FontWeight.bold),
-                          // ),
-                        ],
-                      ),
-                    ),
-                    //child: Text(sponsorsData[index].company),
-                  );
-                },
-                itemCount: itemListOnSearch.length,
-              ),
-          ),
-
-               SizedBox(height: 55), 
-
-            Padding(
-              padding: const EdgeInsets.only(left:55.0),
-              child: Text('Recommend users', textAlign: TextAlign.left, style: TextStyle(
-                fontWeight: FontWeight.w600, color: Colors.blue.shade800, fontSize: 23
-              ),),
-            ),
+            Text('Recommend users', textAlign: TextAlign.left, style: TextStyle(
+              fontWeight: FontWeight.w600, color: Colors.blue.shade800, fontSize: 23
+            ),),
           
           SizedBox(height: 8), // Adjust the spacing here as needed
 
-            Padding(
-              padding: const EdgeInsets.only(left:55.0),
-              child: Text('swipe left or right to see other user', textAlign: TextAlign.left, style: TextStyle(
-                fontWeight: FontWeight.w600, color: Colors.grey.shade600, fontSize: 17
-              ),),
-            ),
+            Text('swipe left and right to see other user', textAlign: TextAlign.left, style: TextStyle(
+              fontWeight: FontWeight.w600, color: Colors.grey.shade600, fontSize: 17
+            ),),
           
-          SizedBox(height: 8), 
-
-               Flexible(
-
+            
+          Expanded(
             child: StreamBuilder(
               
               stream: APIs.getMyUsersId(),
@@ -499,6 +294,92 @@ Future<void> readData() async {
             ),
           ),
 
+
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Users Result from Search Filter'),
+                TextField(
+            onChanged: (value) {
+              setState(() {
+                itemListOnSearch = chatUserData
+                    .where((element) => element.skills
+                        // .toLowerCase()
+                        .contains(value.toLowerCase()))
+                    .toList();
+              });
+            },
+            controller: _valueContains,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              errorBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              contentPadding: EdgeInsets.all(15),
+              hintText: 'Search',
+              //
+            ),
+          ),
+          itemListOnSearch.length == 0
+          ? Center(child: CircularProgressIndicator())
+          : Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,),
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 100,
+                            child:
+                                Image.network(itemListOnSearch[index].image),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            itemListOnSearch[index].occupation.join(', '),
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 2,
+                          ),
+                          Text(
+                            itemListOnSearch[index].username,
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 2,
+                          ),
+                          Text(
+                            itemListOnSearch[index].skills.join(', '),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                           SizedBox(
+                            height: 2,
+                          ),
+                            Text(
+                            itemListOnSearch[index].occupation.join(', '),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //child: Text(sponsorsData[index].company),
+                  );
+                },
+                itemCount: itemListOnSearch.length,
+              ),
+          ),
             ],
           ),
           ),  
