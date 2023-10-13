@@ -10,6 +10,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 
+
+
 class APIs {
   
   // for authentication
@@ -390,6 +392,56 @@ class APIs {
         .doc(message.sent)
         .update({'msg': updatedMsg});
   }
+
+
+  //filter search
+
+  // Define your Firestore collection reference
+final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+
+Future<List<ChatUser>> fetchFilteredUsers(FilterOptions filterOptions) async {
+  // Create a reference to the users collection
+  Query query = usersCollection;
+   // Apply filters based on selected criteria
+
+  if (filterOptions.selectedSkills.isNotEmpty) {
+    query = query.where('skills', arrayContainsAny: filterOptions.selectedSkills.split(', '));
+  }
+
+  if (filterOptions.selectedOccupation.isNotEmpty) {
+    query = query.where('occupation', isEqualTo: filterOptions.selectedOccupation);
+  }
+
+  if (filterOptions.selectedHobbies.isNotEmpty) {
+    query = query.where('hobbies', isEqualTo: filterOptions.selectedHobbies);
+  }
+
+  if (filterOptions.selectedUniversities.isNotEmpty) {
+    query = query.where('universities', isEqualTo: filterOptions.selectedUniversities);
+  }
+
+  if (filterOptions.selectedSchools.isNotEmpty) {
+    query = query.where('schools', isEqualTo: filterOptions.selectedSchools);
+  }
+
+  // Execute the query and fetch filtered users
+  final QuerySnapshot querySnapshot = await query.get();
+
+  // Convert the documents to ChatUser objects
+  final List<ChatUser> filteredUsers = querySnapshot.docs
+      .map((document) => ChatUser.fromJson(document.data()
+      as Map<String, dynamic>))
+      .toList();
+
+  return filteredUsers;
 }
 
-//aa
+}
+
+class FilterOptions {
+  String selectedSkills = '';
+  String selectedOccupation = '';
+  String selectedHobbies = '';
+  String selectedUniversities = '';
+  String selectedSchools = '';
+}
