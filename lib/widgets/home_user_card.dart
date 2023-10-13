@@ -25,6 +25,14 @@ class _HomeUserCardState extends State<HomeUserCard> {
   //last message info (if null --> no message)
   Message? _message;
 
+
+  void _navigateToProfileDialog() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProfileDialog(user: widget.user)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     
@@ -41,13 +49,8 @@ class _HomeUserCardState extends State<HomeUserCard> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: InkWell(
             onTap: () {
-              //for navigating to chat screen
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => ChatScreen(user: widget.user),
-                      ),
-                      );
+              //Navigate to the profile dialog 
+              _navigateToProfileDialog();
             },
             child: StreamBuilder(
               stream: APIs.getLastMessage(widget.user),
@@ -59,21 +62,14 @@ class _HomeUserCardState extends State<HomeUserCard> {
     
                 return ListTile(
                   //user profile picture
-                  leading: InkWell(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (_) => ProfileDialog(user: widget.user));
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(mq.height * .03),
-                      child: CachedNetworkImage(
-                        width: mq.height * .055,
-                        height: mq.height * .055,
-                        imageUrl: widget.user.image,
-                        errorWidget: (context, url, error) => const CircleAvatar(
-                            child: Icon(CupertinoIcons.person)),
-                      ),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .03),
+                    child: CachedNetworkImage(
+                      width: mq.height * .055,
+                      height: mq.height * .055,
+                      imageUrl: widget.user.image,
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                          child: Icon(CupertinoIcons.person)),
                     ),
                   ),
     

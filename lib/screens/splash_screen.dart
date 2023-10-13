@@ -1,12 +1,13 @@
 import 'dart:developer';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import '../../main.dart';
 import '../api/apis.dart';
 import 'auth/login_screen.dart';
-import 'contact_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:app/screens/contact_screen.dart';
+
+
+
 
 //splash screen
 class SplashScreen extends StatefulWidget {
