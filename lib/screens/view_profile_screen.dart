@@ -1,9 +1,9 @@
-import 'package:app/helper/my_date_until.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models/chat_user.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:app/helper/my_date_until.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 //view profile screen -- to view profile of user
 class ViewProfileScreen extends StatefulWidget {
@@ -19,84 +19,147 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // for hiding keyboard
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          //app bar
-          appBar: AppBar(title: Text(widget.user.username)),
-          floatingActionButton: //user about
-              Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+        appBar: AppBar(title: Text(widget.user.username)),
+        body: SingleChildScrollView(
+          child: Column(
             children: [
-              const Text(
-                'Joined On: ',
-                style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 15),
+              SizedBox(width: mq.width, height: mq.height * .03),
+
+              ClipRRect(
+                borderRadius: BorderRadius.circular(mq.height * .1),
+                child: CachedNetworkImage(
+                  width: mq.height * .2,
+                  height: mq.height * .2,
+                  fit: BoxFit.cover,
+                  imageUrl: widget.user.image,
+                  errorWidget: (context, url, error) => const CircleAvatar(
+                      child: Icon(CupertinoIcons.person)),
+                ),
               ),
+
+              SizedBox(height: mq.height * .03),
+
               Text(
-                  MyDateUtil.getLastMessageTime(
-                      context: context,
-                      time: widget.user.createdAt,
-                      showYear: true),
-                  style: const TextStyle(color: Colors.black54, fontSize: 15)),
-            ],
-          ),
+                widget.user.email,
+                style: const TextStyle(color: Colors.black87, fontSize: 16),
+              ),
 
-          //body
-          body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: mq.width * .05),
-            child: SingleChildScrollView(
-              child: Column(
+              SizedBox(height: mq.height * .02),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // for adding some space
-                  SizedBox(width: mq.width, height: mq.height * .03),
-
-                  //user profile picture
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(mq.height * .1),
-                    child: CachedNetworkImage(
-                      width: mq.height * .2,
-                      height: mq.height * .2,
-                      fit: BoxFit.cover,
-                      imageUrl: widget.user.image,
-                      errorWidget: (context, url, error) => const CircleAvatar(
-                          child: Icon(CupertinoIcons.person)),
+                  const Text(
+                    'About: ',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
                     ),
                   ),
-
-                  // for adding some space
-                  SizedBox(height: mq.height * .03),
-
-                  // user email label
-                  Text(widget.user.email,
-                      style:
-                          const TextStyle(color: Colors.black87, fontSize: 16)),
-
-                  // for adding some space
-                  SizedBox(height: mq.height * .02),
-
-                  //user about
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'About: ',
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
-                      ),
-                      Text(widget.user.selfIntro,
-                          style: const TextStyle(
-                              color: Colors.black54, fontSize: 15)),
-                    ],
+                  Text(
+                    widget.user.selfIntro,
+                    style: const TextStyle(color: Colors.black54, fontSize: 15),
                   ),
                 ],
               ),
-            ),
-          )),
+
+              SizedBox(height: 15),
+
+              // Additional user information
+              Padding(
+                padding: const EdgeInsets.all(19.5),
+                child: Container(
+                  width: 600,
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Occupation',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            widget.user.occupation.join(',\n '),
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+              
+                          Text(
+                            'Education History',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            widget.user.eduHistory.join(',\n '),
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+              
+                          Text(
+                            'Skills',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            widget.user.skills.join(',\n '),
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+              
+                          Text(
+                            'Experience',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            widget.user.experience.join(',\n '),
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
+ 
