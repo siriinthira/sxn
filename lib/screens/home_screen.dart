@@ -58,24 +58,50 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> readData() async {
-    await Firebase.initializeApp().then((value) async {
-      print("Initialize Success");
-      var x = await FirebaseFirestore.instance
-          .collection('users')
-          .orderBy('skills')
-          .get();
-      x.docs.forEach((element) {
-        print(element.data());
-        ChatUser model = ChatUser.fromJson(element.data());
-        chatUserData.add(model);
-      });
 
-      Future.delayed(Duration(seconds: 2));
-      itemListOnSearch = chatUserData;
-      setState(() {}); //rebuild line 42 after readData();
+ // show all users from database
+  // Future<void> readData() async {
+  //   await Firebase.initializeApp().then((value) async {
+  //     print("Initialize Success");
+  //     var x = await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .orderBy('skills')
+  //         .get();
+  //     x.docs.forEach((element) {
+  //       print(element.data());
+  //       ChatUser model = ChatUser.fromJson(element.data());
+  //       chatUserData.add(model);
+  //     });
+
+  //     Future.delayed(Duration(seconds: 2));
+  //     itemListOnSearch = chatUserData;
+  //     setState(() {}); //rebuild line 42 after readData();
+  //   });
+  // }
+
+  Future<void> readData() async {
+  await Firebase.initializeApp().then((value) async {
+    print("Initialize Success");
+    var x = await FirebaseFirestore.instance
+        .collection('users')
+        .orderBy('skills')
+        .get();
+    x.docs.forEach((element) {
+      print(element.data());
+      ChatUser model = ChatUser.fromJson(element.data());
+
+      // Check if the user is not the logged-in user before adding them to the list
+      if (model.id != APIs.user.uid) {
+        chatUserData.add(model);
+      }
     });
-  }
+
+    Future.delayed(Duration(seconds: 2));
+    itemListOnSearch = chatUserData;
+    setState(() {});
+  });
+}
+
 
   // Define your Firestore collection reference
   final CollectionReference usersCollection =
@@ -83,6 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // Create a variable to store the selected filter values
   FilterOptions _filterOptions = FilterOptions();
+
+
 
   @override
   Widget build(BuildContext context) {
