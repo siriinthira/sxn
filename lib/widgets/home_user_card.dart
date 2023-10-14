@@ -41,16 +41,19 @@ class _HomeUserCardState extends State<HomeUserCard> {
     ListView(
       children: 
       [
-
           Card(
-        margin: EdgeInsets.symmetric(horizontal: mq.width * .10, vertical: 4),
-        // color: Colors.blue.shade100,
-        elevation: 0.5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: InkWell(
+                margin: EdgeInsets.symmetric(horizontal: mq.width * .10, vertical: 4),
+                // color: Colors.blue.shade100,
+                elevation: 0.5,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                child: InkWell(
             onTap: () {
-              //Navigate to the profile dialog 
-              _navigateToProfileDialog();
+               Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ChatScreen(user: widget.user),
+                    ),
+                    );
             },
             child: StreamBuilder(
               stream: APIs.getLastMessage(widget.user),
@@ -59,10 +62,17 @@ class _HomeUserCardState extends State<HomeUserCard> {
                 final list =
                     data?.map((e) => Message.fromJson(e.data())).toList() ?? [];
                 if (list.isNotEmpty) _message = list[0];
-    
+            
                 return ListTile(
+
                   //user profile picture
-                  leading: ClipRRect(
+                   leading: InkWell(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => ProfileDialog(user: widget.user));
+                  },
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(mq.height * .03),
                     child: CachedNetworkImage(
                       width: mq.height * .055,
@@ -72,10 +82,11 @@ class _HomeUserCardState extends State<HomeUserCard> {
                           child: Icon(CupertinoIcons.person)),
                     ),
                   ),
-    
+                ),
+            
                   //user name
                   title: Text(widget.user.username),
-    
+            
                   //last message
                   subtitle: Text(
                       _message != null
@@ -84,7 +95,7 @@ class _HomeUserCardState extends State<HomeUserCard> {
                               : _message!.msg
                           : widget.user.selfIntro,
                       maxLines: 1),
-    
+            
                   //last message time
                   trailing: _message == null
                       ? null //show nothing when no message is sent
@@ -110,7 +121,7 @@ class _HomeUserCardState extends State<HomeUserCard> {
               },
             ),
             ),
-      ),
+              ),
       ],
 
     );

@@ -12,8 +12,10 @@ import 'package:app/widgets/chat_user_card.dart';
 import 'package:app/screens/contact_screen.dart';
 import 'package:app/widgets/home_user_card.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:app/widgets/filter_user_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/widgets/search_filter_user_card.dart';
+
 
 //home screen -- where all available contacts are shown
 class HomeScreen extends StatefulWidget {
@@ -137,97 +139,43 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
 
-                TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      itemListOnSearch = chatUserData
-                          .where((element) => element.skills
-                              // .toLowerCase()
-                              .contains(value.toLowerCase()))
-                          .toList();
-                    });
-                  },
-                  controller: _valueContains,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.all(15),
-                    hintText: '       Search',
-                    //
-                  ),
+               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    itemListOnSearch = chatUserData.where((element) {
+                      final skills = element.skills;
+                      final query = value.toLowerCase();
+                      return skills.any((skill) => skill.toLowerCase().contains(query));
+                    }).toList();
+                  });
+                },
+                controller: _valueContains,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.all(15),
+                  hintText: 'Search',
                 ),
-                IconButton(
-                  onPressed: () {
-                    // Open the filter dialog when the icon is tapped
-                    _showFilterDialog(context);
-                  },
-                  icon: const Icon(Icons.filter_list),
-                ),
-                itemListOnSearch.length == 0
-                    ? Center(child: CircularProgressIndicator())
-                    : Expanded(
-                        child: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                          ),
-                          itemBuilder: (context, index) {
-                            return Card(
-                              child: Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: 100,
-                                      child: Image.network(
-                                          itemListOnSearch[index].image),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      itemListOnSearch[index]
-                                          .occupation
-                                          .join(' '),
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(
-                                      itemListOnSearch[index].username,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(
-                                      itemListOnSearch[index].skills.join(' ,'),
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              //child: Text(sponsorsData[index].company),
-                            );
-                          },
-                          itemCount: itemListOnSearch.length,
-                        ),
+              ),
+
+               if (itemListOnSearch.isNotEmpty)
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
                       ),
+                      itemBuilder: (context, index) {
+                        return FilterUserCard(user: itemListOnSearch[index]);
+                        //return HomeUserCard(user: itemListOnSearch[index]);
+                      },
+                      itemCount: itemListOnSearch.length,
+                    ),
+                  ),
+
+      
+
 
                 SizedBox(height: 55),
 

@@ -393,55 +393,8 @@ class APIs {
         .update({'msg': updatedMsg});
   }
 
+  //filter screen
+  
 
-  //filter search
 
-  // Define your Firestore collection reference
-final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
-
-Future<List<ChatUser>> fetchFilteredUsers(FilterOptions filterOptions) async {
-  // Create a reference to the users collection
-  Query query = usersCollection;
-   // Apply filters based on selected criteria
-
-  if (filterOptions.selectedSkills.isNotEmpty) {
-    query = query.where('skills', arrayContainsAny: filterOptions.selectedSkills.split(', '));
-  }
-
-  if (filterOptions.selectedOccupation.isNotEmpty) {
-    query = query.where('occupation', isEqualTo: filterOptions.selectedOccupation);
-  }
-
-  if (filterOptions.selectedHobbies.isNotEmpty) {
-    query = query.where('hobbies', isEqualTo: filterOptions.selectedHobbies);
-  }
-
-  if (filterOptions.selectedUniversities.isNotEmpty) {
-    query = query.where('universities', isEqualTo: filterOptions.selectedUniversities);
-  }
-
-  if (filterOptions.selectedSchools.isNotEmpty) {
-    query = query.where('schools', isEqualTo: filterOptions.selectedSchools);
-  }
-
-  // Execute the query and fetch filtered users
-  final QuerySnapshot querySnapshot = await query.get();
-
-  // Convert the documents to ChatUser objects
-  final List<ChatUser> filteredUsers = querySnapshot.docs
-      .map((document) => ChatUser.fromJson(document.data()
-      as Map<String, dynamic>))
-      .toList();
-
-  return filteredUsers;
-}
-
-}
-
-class FilterOptions {
-  String selectedSkills = '';
-  String selectedOccupation = '';
-  String selectedHobbies = '';
-  String selectedUniversities = '';
-  String selectedSchools = '';
 }
