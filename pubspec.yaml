@@ -48,7 +48,9 @@ dependencies:
   card_slider: ^1.0.5
   # for using card swiper
   card_swiper: ^3.0.1
-
+  # for using dropdown search
+  dropdown_search: ^5.0.6
+  flutter_typeahead: ^4.8.0
   
 
 
