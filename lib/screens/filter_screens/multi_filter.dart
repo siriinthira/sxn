@@ -7,9 +7,7 @@ import 'package:app/screens/filter_screens/alumni_filter.dart';
 import 'package:app/screens/filter_screens/alumni_filter.dart';
  
  
- 
- 
- 
+
  
 class MultiFilterScreen extends StatefulWidget {
   final ChatUser user;

@@ -33,13 +33,14 @@ void main() async{
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown ]).then((value) { 
    
     // _initializeFirebase();
-  runApp(const MyApp());
+  //runApp(const MyApp());
   
   // Check the user's authentication status
  User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
     print('User is authenticated: ${user.uid}');
   } else {
+    return HomeScreen();
     print('User is not authenticated');
   }
   

@@ -9,8 +9,6 @@ import 'package:app/screens/filter_screens/jobskills_filter.dart';
  
  
  
- 
- 
 class AlumniFilterScreen extends StatefulWidget {
   final ChatUser user;
  
@@ -29,10 +27,11 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
       GlobalKey();
   final GlobalKey<DropdownSearchState<String>> _eduHistoryDropdownKey =
       GlobalKey();
- 
-  // List<String> selectedSkills = [];
-  // List<String> selectedOccupations = [];
-  // List<String> selectedHobbies = [];
+  // separate lists for each dropdown selection:
+  List<String> selectedSchools  = [];
+  List<String> selectedUniversities   = [];
+  List<String> selectedEduHistory  = [];
+
   List<String> selectedOptions =[];
  
   List<String> schools = [];
@@ -137,25 +136,44 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
   }
  
   void _searchUsers() {
+
   // สร้างคิวรี่ Firestore เพื่อกรองผู้ใช้ตามตัวเลือกที่เลือก  
   // Create a Firestore query for filtering users based on selected options
   final usersQuery = FirebaseFirestore.instance.collection('users');
  
    // ใช้ตัวกรองตามค่าที่เลือกจาก DropdownSearch
   // Apply filters based on selected dropdown values
-  // if (selectedSkills.isNotEmpty) {
-  //   usersQuery.where('skills', arrayContainsAny: selectedSkills);
+  // if (selectedSchools.isNotEmpty) {
+  //   usersQuery.where('schools', arrayContainsAny: selectedSchools);
   // }
-  // if (selectedOccupations.isNotEmpty) {
-  //   usersQuery.where('occupation', arrayContainsAny: selectedOccupations);
+  // if (selectedUniversities.isNotEmpty) {
+  //   usersQuery.where('universities', arrayContainsAny: selectedUniversities);
   // }
-  // if (selectedHobbies.isNotEmpty) {
-  //   usersQuery.where('hobbies', arrayContainsAny: selectedHobbies);
+  // if (selectedEduHistory.isNotEmpty) {
+  //   usersQuery.where('edu_history', arrayContainsAny: selectedEduHistory);
   // }
  
    // ใช้ตัวกรองตามค่าที่เลือกจาก DropdownSearch
-  if (selectedOptions.isNotEmpty) {
-    usersQuery.where('your_field_name', arrayContainsAny: selectedOptions);
+  // if (selectedOptions.isNotEmpty) {
+  //   usersQuery.where('your_field_name', arrayContainsAny: selectedOptions);
+  // }
+
+  List<String> allSelectedOptions =[];
+
+  allSelectedOptions.addAll(selectedSchools);
+
+  allSelectedOptions.addAll(universities);
+
+  allSelectedOptions.addAll(eduHistory);
+
+  if (allSelectedOptions.isNotEmpty) {
+    usersQuery.where('schools', arrayContainsAny: allSelectedOptions);
+    usersQuery.where('universities', arrayContainsAny: allSelectedOptions);
+    usersQuery.where('edu_history', arrayContainsAny: allSelectedOptions);
+
+    
+  } else {
+    
   }
  
  
@@ -213,7 +231,7 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
               items: schools,
               onChanged: (selectedItems) {
                 setState(() {
-                  selectedOptions = selectedItems;
+                  selectedSchools  = selectedItems;
                   _queryUsersBySchools();
                 });
               },
@@ -229,7 +247,7 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
               items: universities,
               onChanged: (selectedItems) {
                 setState(() {
-                  selectedOptions = selectedItems;
+                  selectedUniversities = selectedItems;
                   _queryUsersByUniversities();
                 });
               },
@@ -244,7 +262,7 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
               items: eduHistory,
               onChanged: (selectedItems) {
                 setState(() {
-                  selectedOptions = selectedItems;
+                  selectedEduHistory = selectedItems;
                   _queryUsersByEduHistory();
                 });
               },
@@ -275,7 +293,12 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
               }
  
  
- 
+               // คัดเลือกผู้ใช้ที่ตรงกัยมหาวิทยาลัยและโรงเรียนที่เลือก
+       
+  
+
+
+
               // แสดงผู้ใช้ที่พบ
                     return Column(
                 children: snapshot.data!.map((doc) {
@@ -297,6 +320,7 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
                 }).toList(),
               );
  
+                
             },
           ),
           ],
