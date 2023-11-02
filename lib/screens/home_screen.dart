@@ -1,4 +1,3 @@
-import '../main.dart';
 import 'dart:developer';
 import '../api/apis.dart';
 import '../helper/dialogs.dart';
@@ -7,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:card_swiper/card_swiper.dart';
-import 'package:app/screens/splash_screen.dart';
 import 'package:app/screens/profile_screen.dart';
-import 'package:app/widgets/chat_user_card.dart';
 import 'package:app/screens/contact_screen.dart';
 import 'package:app/widgets/home_user_card.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,7 +14,12 @@ import 'package:app/widgets/filter_user_card.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:app/screens/auth/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:app/widgets/search_filter_user_card.dart';
+import 'package:app/screens/filter_screens/multi_filter.dart';
+
+
+
+
+
 
 
 
@@ -104,20 +106,22 @@ Future<void> _handleLogout() async {
     APIs.getSelfInfo();
     readData();
 
-    SystemChannels.lifecycle.setMessageHandler((message) {
-      log('Message: $message');
+    // SystemChannels.lifecycle.setMessageHandler((message) {
+    //   log('Message: $message');
 
-      if (APIs.auth.currentUser != null) {
-        if (message.toString().contains('resume')) {
-          APIs.updateActiveStatus(true);
-        }
-        if (message.toString().contains('pause')) {
-          APIs.updateActiveStatus(false);
-        }
-      }
+    //   // if (APIs.auth.currentUser != null) {
+    //   //   if (message.toString().contains('resume')) {
+    //   //     APIs.updateActiveStatus(true);
+    //   //   }
+    //   //   if (message.toString().contains('pause')) {
+    //   //     APIs.updateActiveStatus(false);
+    //   //   }
+    //   // }
 
-      return Future.value(message);
-    });
+    //   return Future.value(message);
+    // }
+    // );
+
   }
 
 
@@ -211,26 +215,64 @@ Future<void> _handleLogout() async {
                   ),
                 ),
 
-               TextField(
-                onChanged: (value) {
-                  setState(() {
-                    itemListOnSearch = chatUserData.where((element) {
-                      final skills = element.skills;
-                      final query = value.toLowerCase();
-                      return skills.any((skill) => skill.toLowerCase().contains(query));
-                    }).toList();
-                  });
-                },
-                controller: _valueContains,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.all(15),
-                  hintText: 'Search',
-                ),
-              ),
+
+               // original search bar using textfield to search by skills w/o filter icon
+              //  TextField(
+              //   onChanged: (value) {
+              //     setState(() {
+              //       itemListOnSearch = chatUserData.where((element) {
+              //         final skills = element.skills;
+              //         final query = value.toLowerCase();
+              //         return skills.any((skill) => skill.toLowerCase().contains(query));
+              //       }).toList();
+              //     });
+              //   },
+              //   controller: _valueContains,
+              //   decoration: InputDecoration(
+              //     border: InputBorder.none,
+              //     errorBorder: InputBorder.none,
+              //     enabledBorder: InputBorder.none,
+              //     focusedBorder: InputBorder.none,
+              //     contentPadding: EdgeInsets.all(15),
+              //     hintText: 'Search',
+              //   ),
+              // ),
+
+              //new search bar with filter icon
+              TextField(
+  onChanged: (value) {
+    setState(() {
+      itemListOnSearch = chatUserData.where((element) {
+        final skills = element.skills;
+        final query = value.toLowerCase();
+        return skills.any((skill) => skill.toLowerCase().contains(query));
+      }).toList();
+    });
+  },
+  controller: _valueContains,
+  decoration: InputDecoration(
+    border: InputBorder.none,
+    errorBorder: InputBorder.none,
+    enabledBorder: InputBorder.none,
+    focusedBorder: InputBorder.none,
+    contentPadding: EdgeInsets.all(15),
+    hintText: 'Search',
+
+    //filter icon
+    suffixIcon: IconButton(
+      icon: Icon(Icons.filter_alt), // Icon for your 'Filter' button
+      onPressed: () {
+        // Navigate to the 'MultiFilterScreen'
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MultiFilterScreen(user:  APIs.me)),
+        );
+      },
+    ),
+  ),
+),
+
+
 
                if (itemListOnSearch.isNotEmpty)
                   Expanded(
