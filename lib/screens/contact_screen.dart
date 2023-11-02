@@ -9,6 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import '../widgets/chat_user_card.dart';
 import 'package:app/screens/home_screen.dart';
+import 'package:app/screens/auth/login_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 
 
 //home screen -- where all available contacts are shown
@@ -56,6 +59,63 @@ class _ContactScreenState extends State<ContactScreen> {
     });
   }
 
+
+  //-------------------           Bottom Navigation Bar          ------------------------------------------------//
+
+// Function to handle the logout process
+Future<void> _handleLogout() async {
+  // Show a progress dialog
+  Dialogs.showProgressBar(context);
+
+  try {
+    // Sign out from Firebase and Google
+    await APIs.auth.signOut();
+    await GoogleSignIn().signOut();
+
+    // Hide the progress dialog
+    Navigator.pop(context);
+
+    // Navigate to the login screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
+  } catch (e) {
+    // Handle any errors that occurred during sign-out, e.g., show an error dialog
+    Dialogs.showSnackbar(context, 'Error signing out: $e');
+  }
+}
+
+ int _selectedIndex = 1;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+
+    switch (index){
+
+      case 0:
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      break;
+
+      case 1 :
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => ContactScreen()));
+      break;
+
+      case 2 :
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(user: APIs.me)));
+      break;
+
+      case 3 :
+      _handleLogout();
+      break;
+    }
+
+    });
+  }
+
+  //-------------------           Bottom Navigation Bar          ------------------------------------------------//
+  
   @override
   Widget build(BuildContext context) {
     return 
@@ -221,6 +281,33 @@ class _ContactScreenState extends State<ContactScreen> {
               }
             },
           ),
+                                bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: Colors.greenAccent,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Contact',
+            backgroundColor: Colors.blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+            backgroundColor: Colors.purple,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.logout),
+            label: 'Logout',
+            backgroundColor: Colors.pink,
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        onTap: _onItemTapped,
+      ),
         ),
       ),
     );

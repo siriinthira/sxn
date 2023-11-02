@@ -1,20 +1,26 @@
-import 'dart:developer';
 import 'dart:io';
-
+import '../main.dart';
+import 'dart:developer';
+import '../api/apis.dart';
+import '../models/message.dart';
+import '../models/chat_user.dart';
+import 'view_profile_screen.dart';
+import '../widgets/message_card.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:app/helper/dialogs.dart';
 import 'package:app/helper/my_date_until.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:app/screens/contact_screen.dart';
+import 'package:app/screens/profile_screen.dart';
+import 'package:app/screens/auth/login_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
-import '../api/apis.dart';
 
-import '../main.dart';
-import '../models/chat_user.dart';
-import '../models/message.dart';
-import '../widgets/message_card.dart';
-import 'view_profile_screen.dart';
+
+
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -26,6 +32,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+
+
   //for storing all messages
   List<Message> _list = [];
 
@@ -36,6 +44,10 @@ class _ChatScreenState extends State<ChatScreen> {
   //isUploading -- for checking if image is uploading or not?
   bool _showEmoji = false, _isUploading = false;
 
+
+
+
+  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -131,7 +143,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   )
               ],
             ),
+ 
           ),
+          
         ),
       ),
     );
@@ -209,7 +223,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   )
                 ],
               );
-            }));
+            }
+            ),
+            );
   }
 
   // bottom chat input field

@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // //for hiding progress bar
       // Navigator.pop(context);
 
+
       if (user != null) {
         log('\nUser: ${user.user}');
         log('\nUserAdditionalInfo: ${user.additionalUserInfo}');
@@ -58,8 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         }
       }
-    });
-  }
+     });
+ }
 
   Future<UserCredential?> _signInWithGoogle() async {
     try {

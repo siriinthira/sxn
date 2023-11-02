@@ -1,25 +1,30 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'dart:developer';
 import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:image_picker/image_picker.dart';
-
+import '../main.dart';
+import 'dart:developer';
 import '../api/apis.dart';
 import '../helper/dialogs.dart';
-import '../main.dart';
-import '../models/chat_user.dart';
 import 'auth/login_screen.dart';
+import '../models/chat_user.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:app/screens/home_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:app/screens/contact_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+
+// ignore_for_file: use_build_context_synchronously
+
+
+// import 'package:firebase_auth/firebase_auth.dart';
+
 
 //profile screen -- to show signed in user info
 class ProfileScreen extends StatefulWidget {
 
   final ChatUser user; 
+
 
   
   const ProfileScreen({super.key, required this.user});
@@ -29,8 +34,67 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
+
   final _formKey = GlobalKey<FormState>();
   String? _image;
+
+  
+
+  //-------------------           Bottom Navigation Bar          ------------------------------------------------//
+
+// Function to handle the logout process
+Future<void> _handleLogout() async {
+  // Show a progress dialog
+  Dialogs.showProgressBar(context);
+
+  try {
+    // Sign out from Firebase and Google
+    await APIs.auth.signOut();
+    await GoogleSignIn().signOut();
+
+    // Hide the progress dialog
+    Navigator.pop(context);
+
+    // Navigate to the login screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
+  } catch (e) {
+    // Handle any errors that occurred during sign-out, e.g., show an error dialog
+    Dialogs.showSnackbar(context, 'Error signing out: $e');
+  }
+}
+
+ int _selectedIndex = 2;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+
+    switch (index){
+
+      case 0:
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+      break;
+      case 1 :
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ContactScreen()));
+      break;
+
+      case 2 :
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(user: APIs.me)));
+      break;
+
+      case 3 :
+      _handleLogout();
+      break;
+    }
+
+    });
+  }
+
+  //-------------------           Bottom Navigation Bar          ------------------------------------------------//
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +135,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           MaterialPageRoute(
                               builder: (_) => const LoginScreen()));
                     });
-                  });
+                  }
+                  );
                 },
                 icon: const Icon(Icons.logout),
                 label: const Text('Logout')),
@@ -297,7 +362,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-          )),
+          ),
+           bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: Colors.greenAccent,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Contact',
+            backgroundColor: Colors.blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+            backgroundColor: Colors.purple,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.logout),
+            label: 'Logout',
+            backgroundColor: Colors.pink,
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        onTap: _onItemTapped,
+      ),
+          ),
     );
   }
 
@@ -379,6 +472,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               )
             ],
           );
-        });
+        }
+        );
   }
 }
