@@ -101,7 +101,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                           SizedBox(height: 20),
               
                           Text(
-                            'Education History',
+                            'Education Level',
                             style: TextStyle(
                               color: Colors.blue,
                               fontSize: 18,
@@ -110,7 +110,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            widget.user.eduHistory.join(',\n '),
+                            widget.user.educationLevel.join(',\n '),
                             style: TextStyle(
                               fontSize: 16,
                             ),

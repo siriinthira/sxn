@@ -15,16 +15,6 @@ import 'package:app/screens/auth/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/screens/filter_screens/multi_filter.dart';
 
-
-
-
-
-
-
-
-
-
-
 //home screen -- where all available contacts are shown
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -34,77 +24,78 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
-//-------------------           Bottom Navigation Bar          ------------------------------------------------//
+//-------------------           Part 1          ------------------------------------------------//
 
 // Function to handle the logout process
-Future<void> _handleLogout() async {
-  // Show a progress dialog
-  Dialogs.showProgressBar(context);
+  Future<void> _handleLogout() async {
+    // Show a progress dialog
+    Dialogs.showProgressBar(context);
 
-  try {
-    // Sign out from Firebase and Google
-    await APIs.auth.signOut();
-    await GoogleSignIn().signOut();
+    try {
+      // Sign out from Firebase and Google
+      await APIs.auth.signOut();
+      await GoogleSignIn().signOut();
 
-    // Hide the progress dialog
-    Navigator.pop(context);
+      // Hide the progress dialog
+      Navigator.pop(context);
 
-    // Navigate to the login screen
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-    );
-  } catch (e) {
-    // Handle any errors that occurred during sign-out, e.g., show an error dialog
-    Dialogs.showSnackbar(context, 'Error signing out: $e');
+      // Navigate to the login screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    } catch (e) {
+      // Handle any errors that occurred during sign-out, e.g., show an error dialog
+      Dialogs.showSnackbar(context, 'Error signing out: $e');
+    }
   }
-}
 
- int _selectedIndex = 0;
+// Bottom Nav Bar switch case function
+  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
 
-    switch (index){
+      switch (index) {
+        case 1:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ContactScreen()));
+          break;
 
-      case 1 :
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ContactScreen()));
-      break;
+        case 2:
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfileScreen(user: APIs.me)));
+          break;
 
-      case 2 :
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(user: APIs.me)));
-      break;
-
-      case 3 :
-      _handleLogout();
-      break;
-    }
-
+        case 3:
+          _handleLogout();
+          break;
+      }
     });
   }
 
-  //-------------------           Bottom Navigation Bar          ------------------------------------------------//
-
-
+  //-------------------           Part 2          ------------------------------------------------//
 
   // for storing all users : Your list of ChatUser data
   List<ChatUser> _list = [];
 
-  //SearchBar
+  //SearchBar named '_valueContains'
   TextEditingController? _valueContains = TextEditingController();
-  //SearchList
+
+  //SearchList aka my list of search item
   List<ChatUser> itemListOnSearch = [];
 
+  // for storing all users chat data
   List<ChatUser> chatUserData = [];
 
   @override
   void initState() {
     super.initState();
-    APIs.getSelfInfo();
-    readData();
+    APIs.getSelfInfo(); //ดึงข้อมูลโทเคนของผู้ใช้ และ ตรวจสอบสถานะการเข้าใช้งาน
+    readData(); //อ่านและดึงข้อมูลที่วิตเจ็ตจะใช้เพื่อประมวลผล
 
     // SystemChannels.lifecycle.setMessageHandler((message) {
     //   log('Message: $message');
@@ -121,47 +112,46 @@ Future<void> _handleLogout() async {
     //   return Future.value(message);
     // }
     // );
-
   }
 
-
   Future<void> readData() async {
-  await Firebase.initializeApp().then((value) async {
-    print("Initialize Success");
-    var x = await FirebaseFirestore.instance
-        .collection('users')
-        .orderBy('skills')
-        .get();
-    x.docs.forEach((element) {
-      print(element.data());
-      ChatUser model = ChatUser.fromJson(element.data());
+    await Firebase.initializeApp().then((value) async {
+      // เชื่อมต่อกับ firebase ก่อน แล้วค่อยทำคำสั่งต่อไป
+      print("Initialize Success");
+      var x = await FirebaseFirestore
+          .instance // สร้างออปเจกต์ของ FirebaseFirestore เพื่อ ดึงข้อมูลจากคอลเลคชัน user ใน field ของ skills
+          .collection('users')
+          .orderBy('skills')
+          .get();
+      x.docs.forEach((element) {
+        // วนลูปผ่านเอกสารบน firestore และประมวลข้อมูล
+        print(element.data());
+        ChatUser model = ChatUser.fromJson(element
+            .data()); // สร้างออปเจกต์ของคลาส ผู้ใช้งาน แล้ว แปลงให้อยู่ในรูป Json formats
 
-      // Check if the user is not the logged-in user before adding them to the list
-      if (model.id != APIs.user.uid) {
-        chatUserData.add(model);
-      }
+        // ไอดีของ user ที่อ่านบน doc firestore จะต้องไม่ตรงกับไอดีของผู้ใช้เอง ถึงจะเพิ่มเข้าไป ในลิสต์นี้ได้
+        if (model.id != APIs.user.uid) {
+          chatUserData.add(model);
+        }
+      });
+
+      Future.delayed(Duration(seconds: 2));
+      itemListOnSearch =
+          chatUserData; // ข้อมูลในลิสต์ของผู้ใช้ที่ทำการค้นหาต้องตรงกับลิสต์ของผู้ใช้ที่ตรวจสอบแล้ว
+      setState(() {});
     });
+  }
 
-    Future.delayed(Duration(seconds: 2));
-    itemListOnSearch = chatUserData;
-    setState(() {});
-  });
-}
-
-
-  // Define your Firestore collection reference
+  // Define your Firestore collection reference ????????? *********** use or not ?
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
 
 // // Create a variable to store the selected filter values
 //   FilterOptions _filterOptions = FilterOptions();
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       //app bar
       appBar: AppBar(
         backgroundColor: Colors.greenAccent,
@@ -169,8 +159,7 @@ Future<void> _handleLogout() async {
         leading: IconButton(
           onPressed: () {
             Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (_) => ContactScreen()));
+                context, MaterialPageRoute(builder: (_) => ContactScreen()));
           },
           icon: const Icon(Icons.arrow_back),
         ),
@@ -189,13 +178,11 @@ Future<void> _handleLogout() async {
             },
             icon: const Icon(Icons.person_2_outlined),
           ),
-          
         ],
       ),
 
       body: Column(
         children: [
-          
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,66 +202,46 @@ Future<void> _handleLogout() async {
                   ),
                 ),
 
+                //new search bar with filter icon
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      itemListOnSearch = chatUserData.where((element) {
+                        final skills = element.skills;
+                        final query = value.toLowerCase();
+                        return skills.any(
+                            (skill) => skill.toLowerCase().contains(query));
+                      }).toList();
+                    });
+                  },
+                  controller: _valueContains,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.all(15),
+                    hintText: 'Search',
 
-               // original search bar using textfield to search by skills w/o filter icon
-              //  TextField(
-              //   onChanged: (value) {
-              //     setState(() {
-              //       itemListOnSearch = chatUserData.where((element) {
-              //         final skills = element.skills;
-              //         final query = value.toLowerCase();
-              //         return skills.any((skill) => skill.toLowerCase().contains(query));
-              //       }).toList();
-              //     });
-              //   },
-              //   controller: _valueContains,
-              //   decoration: InputDecoration(
-              //     border: InputBorder.none,
-              //     errorBorder: InputBorder.none,
-              //     enabledBorder: InputBorder.none,
-              //     focusedBorder: InputBorder.none,
-              //     contentPadding: EdgeInsets.all(15),
-              //     hintText: 'Search',
-              //   ),
-              // ),
+                    //filter icon
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                          Icons.filter_alt), // Icon for your 'Filter' button
+                      onPressed: () {
+                        // Navigate to the 'MultiFilterScreen'
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MultiFilterScreen(user: APIs.me)),
+                        );
+                      },
+                    ),
+                  ),
+                ),
 
-              //new search bar with filter icon
-              TextField(
-  onChanged: (value) {
-    setState(() {
-      itemListOnSearch = chatUserData.where((element) {
-        final skills = element.skills;
-        final query = value.toLowerCase();
-        return skills.any((skill) => skill.toLowerCase().contains(query));
-      }).toList();
-    });
-  },
-  controller: _valueContains,
-  decoration: InputDecoration(
-    border: InputBorder.none,
-    errorBorder: InputBorder.none,
-    enabledBorder: InputBorder.none,
-    focusedBorder: InputBorder.none,
-    contentPadding: EdgeInsets.all(15),
-    hintText: 'Search',
-
-    //filter icon
-    suffixIcon: IconButton(
-      icon: Icon(Icons.filter_alt), // Icon for your 'Filter' button
-      onPressed: () {
-        // Navigate to the 'MultiFilterScreen'
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MultiFilterScreen(user:  APIs.me)),
-        );
-      },
-    ),
-  ),
-),
-
-
-
-               if (itemListOnSearch.isNotEmpty)
+                // check if user is typing , the result will be shown in form of user's card
+                if (itemListOnSearch.isNotEmpty)
                   Expanded(
                     child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -288,10 +255,9 @@ Future<void> _handleLogout() async {
                     ),
                   ),
 
-      
-
-
                 SizedBox(height: 55),
+
+                // Recommend USer
 
                 Padding(
                   padding: const EdgeInsets.only(left: 55.0),
@@ -305,7 +271,7 @@ Future<void> _handleLogout() async {
                   ),
                 ),
 
-                SizedBox(height: 8), // Adjust the spacing here as needed
+                SizedBox(height: 8), 
 
                 Padding(
                   padding: const EdgeInsets.only(left: 55.0),
@@ -383,14 +349,9 @@ Future<void> _handleLogout() async {
                     },
                   ),
                 ),
-
-    
-                  
               ],
             ),
-           
           ),
-          
         ], //children
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -422,7 +383,4 @@ Future<void> _handleLogout() async {
       ),
     );
   }
-
-
-
- }
+}

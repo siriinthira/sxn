@@ -288,7 +288,7 @@ Future<void> _handleLogout() async {
                               ),
                               SizedBox(height: 8), // Add some spacing
                               Text(
-                                widget.user.eduHistory.join(',\n '),
+                                widget.user.educationLevel.join(',\n '),
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),

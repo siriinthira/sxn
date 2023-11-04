@@ -191,7 +191,7 @@ class ChatUser {
     required this.image,
     required this.occupation,
     required this.createdAt,
-    required this.eduHistory,
+    required this.educationLevel,
     required this.experience,
     required this.certification,
     required this.skills,
@@ -220,7 +220,7 @@ class ChatUser {
   late String email;
   late String createdAt;
   late List<String> occupation;
-  late List<String> eduHistory;
+  late List<String> educationLevel;
   late List<String> experience;
   late List<String> certification;
   late List<String> skills;
@@ -244,9 +244,9 @@ class ChatUser {
 
     // Handle fields that can be either a String or List<dynamic>
 
-    eduHistory = (json['edu_history'] is List)
-        ? (json['edu_history'] as List).cast<String>()
-        : <String>[json['edu_history']];
+    educationLevel = (json['educationLevel'] is List)
+        ? (json['educationLevel'] as List).cast<String>()
+        : <String>[json['educationLevel']];
         
     experience = (json['experience'] is List)
         ? (json['experience'] as List).cast<String>()
@@ -283,9 +283,9 @@ class ChatUser {
     pushToken = json['push_token'];
 
 
-    // eduHistory = List.castFrom<dynamic, String>(json['edu_history']);
+    // educationLevel = List.castFrom<dynamic, String>(json['educationLevel']);
     
-    // eduHistory = (json['edu_history'] as List<dynamic>).cast<String>();
+    // educationLevel = (json['educationLevel'] as List<dynamic>).cast<String>();
 
     // experience = (json['experience'] as List<dynamic>).cast<String>();
 
@@ -313,7 +313,7 @@ class ChatUser {
     _data['image'] = image;
     _data['occupation'] = occupation;
     _data['created_at'] = createdAt;
-    _data['edu_history'] = eduHistory;
+    _data['educationLevel'] = educationLevel;
     _data['experience'] = experience;
     _data['certification'] = certification;
     _data['skills'] = skills;

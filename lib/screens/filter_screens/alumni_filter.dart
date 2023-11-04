@@ -1,15 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:app/models/chat_user.dart';
+import 'package:app/widgets/alumni_user_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:app/screens/filter_screens/multi_filter.dart';
-import 'package:app/screens/filter_screens/jobskills_filter.dart';
  
+ 
+    
  
  
  
 class AlumniFilterScreen extends StatefulWidget {
+
+  //model of user
   final ChatUser user;
  
   const AlumniFilterScreen({Key? key, required this.user, }) : super(key: key);
@@ -19,28 +23,33 @@ class AlumniFilterScreen extends StatefulWidget {
 }
  
 class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
- 
- 
-  final GlobalKey<DropdownSearchState<String>> _schoolsDropdownKey =
-      GlobalKey();
-  final GlobalKey<DropdownSearchState<String>> _universitiesDropdownKey =
-      GlobalKey();
-  final GlobalKey<DropdownSearchState<String>> _eduHistoryDropdownKey =
-      GlobalKey();
-  // separate lists for each dropdown selection:
-  List<String> selectedSchools  = [];
-  List<String> selectedUniversities   = [];
-  List<String> selectedEduHistory  = [];
 
+  //card result
+  List<AlumniUserCard> alumniUserCards = [];
+ 
+ 
+ // drop down search  x3
+
+  final GlobalKey<DropdownSearchState<String>> _schoolDropdownKey =
+      GlobalKey();
+  final GlobalKey<DropdownSearchState<String>> _universityDropdownKey =
+      GlobalKey();
+  final GlobalKey<DropdownSearchState<String>> _eduLevelDropdownKey =
+      GlobalKey();
+ 
+ // List of selected options from dropdown search
+  // List<String> selectedSkills = [];
+  // List<String> selectedOccupations = [];
+  // List<String> selectedHobbies = [];
   List<String> selectedOptions =[];
  
+ // list of data from each fields from docs
   List<String> schools = [];
   List<String> universities = [];
-  List<String> eduHistory = [];
+  List<String> educationLevel = [];
  
   // สร้าง StreamController สำหรับผู้ใช้ที่เลือกผ่านตัวกรอง เพื่อใช้ส่งข้อมูลผู้ใช้ไปยัง SteamBuilder ในภายหลัง
-  StreamController<List<QueryDocumentSnapshot>> _usersStreamController =
-    StreamController<List<QueryDocumentSnapshot>>();
+  StreamController<List<QueryDocumentSnapshot>> _usersStreamController = StreamController<List<QueryDocumentSnapshot>>();
  
     @override
   void dispose() {
@@ -69,10 +78,11 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
     });
   }
  
-  void _queryUsersByEduHistory() {
+ // query by field function
+  void _queryUsersBySchools() {
     final usersQuery = FirebaseFirestore.instance
         .collection('users')
-        .where('eduHistory', arrayContainsAny: selectedOptions);
+        .where('schools', arrayContainsAny: selectedOptions);
  
         usersQuery.snapshots().listen((snapshot) {
           _usersStreamController.add(snapshot.docs);
@@ -99,18 +109,6 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
     // );
   }
  
-  void _queryUsersBySchools() {
-    final usersQuery = FirebaseFirestore.instance
-        .collection('users')
-        .where('schools', arrayContainsAny: selectedOptions);
- 
-     
-        usersQuery.snapshots().listen((snapshot) {
-          _usersStreamController.add(snapshot.docs);
-         });
-   
-  }
- 
   void _queryUsersByUniversities() {
     final usersQuery = FirebaseFirestore.instance
         .collection('users')
@@ -123,57 +121,50 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
    
   }
  
+  void _queryUsersByEducationLevel() {
+    final usersQuery = FirebaseFirestore.instance
+        .collection('users')
+        .where('educationLevel', arrayContainsAny: selectedOptions);
+ 
+     
+        usersQuery.snapshots().listen((snapshot) {
+          _usersStreamController.add(snapshot.docs);
+         });
+   
+  }
+ 
   @override
   void initState() {
     super.initState();
  
-    // Fetch data for schools, universities, and eduHistory
+    // Fetch data for schools, universities, and eduLevel
     fetchData('users', 'schools', schools);
     fetchData('users', 'universities', universities);
-   
-    fetchData('users', 'eduHistory', eduHistory);
+
+    fetchData('users', 'educationLevel', educationLevel);
    
   }
  
   void _searchUsers() {
-
   // สร้างคิวรี่ Firestore เพื่อกรองผู้ใช้ตามตัวเลือกที่เลือก  
   // Create a Firestore query for filtering users based on selected options
   final usersQuery = FirebaseFirestore.instance.collection('users');
  
    // ใช้ตัวกรองตามค่าที่เลือกจาก DropdownSearch
   // Apply filters based on selected dropdown values
-  // if (selectedSchools.isNotEmpty) {
-  //   usersQuery.where('schools', arrayContainsAny: selectedSchools);
+  // if (selectedSkills.isNotEmpty) {
+  //   usersQuery.where('skills', arrayContainsAny: selectedSkills);
   // }
-  // if (selectedUniversities.isNotEmpty) {
-  //   usersQuery.where('universities', arrayContainsAny: selectedUniversities);
+  // if (selectedOccupations.isNotEmpty) {
+  //   usersQuery.where('occupation', arrayContainsAny: selectedOccupations);
   // }
-  // if (selectedEduHistory.isNotEmpty) {
-  //   usersQuery.where('edu_history', arrayContainsAny: selectedEduHistory);
+  // if (selectedHobbies.isNotEmpty) {
+  //   usersQuery.where('hobbies', arrayContainsAny: selectedHobbies);
   // }
  
    // ใช้ตัวกรองตามค่าที่เลือกจาก DropdownSearch
-  // if (selectedOptions.isNotEmpty) {
-  //   usersQuery.where('your_field_name', arrayContainsAny: selectedOptions);
-  // }
-
-  List<String> allSelectedOptions =[];
-
-  allSelectedOptions.addAll(selectedSchools);
-
-  allSelectedOptions.addAll(universities);
-
-  allSelectedOptions.addAll(eduHistory);
-
-  if (allSelectedOptions.isNotEmpty) {
-    usersQuery.where('schools', arrayContainsAny: allSelectedOptions);
-    usersQuery.where('universities', arrayContainsAny: allSelectedOptions);
-    usersQuery.where('edu_history', arrayContainsAny: allSelectedOptions);
-
-    
-  } else {
-    
+  if (selectedOptions.isNotEmpty) {
+    usersQuery.where('your_field_name', arrayContainsAny: selectedOptions);
   }
  
  
@@ -184,12 +175,90 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
   });
 }
  
+// void _searchUsers() {
+//   final usersQuery = FirebaseFirestore.instance.collection('users');
+
+//   if (selectedOptions.isNotEmpty) {
+//     usersQuery.where('your_field_name', arrayContainsAny: selectedOptions);
+//   }
+
+//   usersQuery.get().then((querySnapshot) {
+    
+//     List<AlumniUserCard> alumniUserCards = [];
+
+//     querySnapshot.docs.forEach((doc) {
+
+//       final user = doc.data() as Map<String, dynamic>;
+
+//       final username = user['username'] as String? ?? 'User Found';
+
+//       final schools = (user['schools'] is List<String>)
+//           ? (user['schools'] as List<String>).join(', ')
+//           : 'No schools';
+
+//       final universities = (user['universities'] is List<String>)
+//           ? (user['universities'] as List<String>).join(', ')
+//           : 'No universities';
+
+//       alumniUserCards.add(AlumniUserCard(
+//         user: ChatUser(
+//           // Initialize ChatUser with appropriate fields
+//           username: username,
+//           image: user['image'] as String, // Assuming there is an 'image' field in my user data
+//           universities: user['universities'] as List<String>, // Replace with actual field
+//           schools: user['schools'] as List<String>, 
+//           occupation: [], 
+//           createdAt: '', 
+//           educationLevel: [], 
+//           experience: [], 
+//           certification: [], 
+//           skills: [], 
+//           hobbies: [], 
+//           location: '', 
+//           lastActive: '', 
+//           id: '', 
+//           isOnline: false, 
+//           selfIntro: '', 
+//           email: '', 
+//           pushToken: '', // Replace with actual field
+//           // Add other fields as needed
+//         ),
+//       ));
+//     });
+
+//     setState(() {
+//       this.alumniUserCards = alumniUserCards;
+//     });
+//   });
+// }
+
+
  
   @override
   Widget build(BuildContext context) {
  
-      // เพิ่ม StreamBuilder เพื่อแสดงผลผู้ใช้จาก Firestore โดยใช้ StreamController ที่เราสร้างไว้:
-   
+//       // เพิ่ม StreamBuilder ที่ดีดแปลง เพื่อแสดงผลผู้ใช้จาก Firestore โดยใช้ StreamController ที่เราสร้างไว้: แสดงผลในรูปแบบ alumniUserCards
+//       StreamBuilder<List<QueryDocumentSnapshot>>(
+//   stream: _usersStreamController.stream,
+//   builder: (context, snapshot) {
+//     if (snapshot.connectionState == ConnectionState.waiting) {
+//       return CircularProgressIndicator(); // Show a loading indicator.
+//     }
+//     if (snapshot.hasError) {
+//       return Text('Error: ${snapshot.error}');
+//     }
+//     if (!snapshot.hasData || snapshot.data!.isEmpty) {
+//       return Text('No users found.');
+//     }
+
+//     // Use the alumniUserCards list to display user cards
+//     return Column(
+//       children: alumniUserCards,
+//     );
+//   },
+// );
+
+
     return Scaffold(
       appBar: AppBar(title: Text("Filter Alumni")),
       body: Padding(
@@ -227,11 +296,11 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
             Text('Pick Schools'),
             //Schools Dropdown
             DropdownSearch<String>.multiSelection(
-              key: _schoolsDropdownKey,
+              key: _schoolDropdownKey,
               items: schools,
               onChanged: (selectedItems) {
                 setState(() {
-                  selectedSchools  = selectedItems;
+                  selectedOptions = selectedItems;
                   _queryUsersBySchools();
                 });
               },
@@ -243,11 +312,11 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
             Text('Pick Universities'),
            // Universities Dropdown
             DropdownSearch<String>.multiSelection(
-              key: _universitiesDropdownKey,
+              key: _universityDropdownKey,
               items: universities,
               onChanged: (selectedItems) {
                 setState(() {
-                  selectedUniversities = selectedItems;
+                  selectedOptions = selectedItems;
                   _queryUsersByUniversities();
                 });
               },
@@ -255,15 +324,15 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
  
            Divider(),
             SizedBox(height: 30,),
-            Text('Pick Education History'),
+            Text('Pick Education Level'),
           //  Education History Dropdown
             DropdownSearch<String>.multiSelection(
-              key: _eduHistoryDropdownKey,
-              items: eduHistory,
+              key: _eduLevelDropdownKey,
+              items: educationLevel,
               onChanged: (selectedItems) {
                 setState(() {
-                  selectedEduHistory = selectedItems;
-                  _queryUsersByEduHistory();
+                  selectedOptions = selectedItems;
+                  _queryUsersByEducationLevel();
                 });
               },
             ),
@@ -292,14 +361,9 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
                 return Text('No users found.');
               }
  
+
  
-               // คัดเลือกผู้ใช้ที่ตรงกัยมหาวิทยาลัยและโรงเรียนที่เลือก
-       
-  
-
-
-
-              // แสดงผู้ใช้ที่พบ
+             // แสดงผู้ใช้ที่พบ
                     return Column(
                 children: snapshot.data!.map((doc) {
                   final user = doc.data() as Map<String, dynamic>; // Cast to Map<String, dynamic>
@@ -312,15 +376,16 @@ class _AlumniFilterScreenState extends State<AlumniFilterScreen> {
                       ? (user['universities'] as List<String>).join(', ')
                       : 'user found';
  
-                  return ListTile(
+                  return 
+                  
+                  ListTile(
                     title: Text(username),
                     subtitle: Text(universities, maxLines: 1),
                     trailing: Text(schools, maxLines: 1),
                   );
-                }).toList(),
+                 }).toList(),
               );
  
-                
             },
           ),
           ],

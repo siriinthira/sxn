@@ -23,7 +23,8 @@ late Size mq;
 void main() async{
   
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  
+   await Firebase.initializeApp();
   // await FirebaseApi().initNotifications();
 
   //enter full screen
@@ -32,25 +33,18 @@ void main() async{
   //for setting orientation to portrait only
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown ]).then((value) { 
    
-    // _initializeFirebase();
-  //runApp(const MyApp());
-  
-  // Check the user's authentication status
- User? user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    print('User is authenticated: ${user.uid}');
-  } else {
-    return HomeScreen();
-    print('User is not authenticated');
-  }
+//   // Check the user's authentication status
+//  User? user = FirebaseAuth.instance.currentUser;
+//   if (user != null) {
+//     print('User is authenticated: ${user.uid}');
+//   } else {
+//     return HomeScreen();
+//     print('User is not authenticated');
+//   }
   
   }
   
   );
-  
-  await Firebase.initializeApp();
-  //integrating firebase
-  _initializeFirebase();
   runApp(const MyApp());
 }
 
